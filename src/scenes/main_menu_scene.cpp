@@ -35,6 +35,6 @@ bool MainMenu::init()
 
 void MainMenu::startGame(Ref* sender)
 {
-    Scene* scene = Game::create();
+    Scene* scene = Game::createScene();
     Director::getInstance()->replaceScene(TransitionFade::create(TRANSITION_TIME, scene));
 }

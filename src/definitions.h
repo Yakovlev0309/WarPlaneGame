@@ -2,8 +2,9 @@
 #define  _DEFINITIONS_H_
 
 #define TRANSITION_TIME 0.5
-
 #define SPLASH_SCENE_TIME 2.0
+
+#define PLAYER_COLLISION_BITMASK 0x000001
 
 #endif // _DEFINITIONS_H_
 

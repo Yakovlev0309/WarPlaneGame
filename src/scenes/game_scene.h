@@ -2,6 +2,7 @@
 #define _GAME_SCENE_H_
 
 #include "cocos2d.h"
+#include "../characters/player.h"
 
 class Game : public cocos2d::Scene
 {
@@ -13,7 +14,15 @@ public:
     CREATE_FUNC(Game);
 
 private:
+    void setPhysicsWorld(cocos2d::PhysicsWorld* world) { sceneWorld = world; }
+
     void gameOver(float dt);
+    void onMouseMove(cocos2d::EventMouse* event);
+
+    Player* player;
+    cocos2d::Rect playerZone;
+
+    cocos2d::PhysicsWorld* sceneWorld;
 };
 
 #endif // _GAME_SCENE_H_

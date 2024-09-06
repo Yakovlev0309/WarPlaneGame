@@ -30,6 +30,6 @@ bool Splash::init()
 
 void Splash::openMainMenu(float dt)
 {
-    Scene* scene = MainMenu::create();
+    Scene* scene = MainMenu::createScene();
     Director::getInstance()->replaceScene(TransitionFade::create(TRANSITION_TIME, scene));
 }
