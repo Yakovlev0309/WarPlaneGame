@@ -18,8 +18,10 @@ private:
 
     void gameOver(float dt);
     void onMouseMove(cocos2d::EventMouse* event);
+    void update(float dt);
 
     Player* player;
+    cocos2d::Vec2 targetPlayerPosition;
     cocos2d::Rect playerZone;
 
     cocos2d::PhysicsWorld* sceneWorld;

@@ -36,16 +36,18 @@ bool Game::init()
 
 	Node* playerZoneNode = Node::create();
 	playerZoneNode->setContentSize(Size(visibleSize.width / 3, visibleSize.height));
-	//playerZoneNode->setPosition(Point(origin.x, origin.y));
 	playerZoneNode->setPhysicsBody(playerZoneBody);
 	playerZone = playerZoneNode->getBoundingBox();
 	addChild(playerZoneNode);
 
-	player = new Player(this, playerZoneNode->getPosition());
+	player = new Player(this, Vec2(visibleSize.width / 2 / 3 + origin.x, visibleSize.height / 2 + origin.y));
+	targetPlayerPosition = player->getPosition();
 
 	EventListenerMouse* mouseListener = EventListenerMouse::create();
 	mouseListener->onMouseMove = CC_CALLBACK_1(Game::onMouseMove, this);
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(mouseListener, this);
+
+	scheduleUpdate();
 
 	return true;
 }
@@ -62,10 +64,24 @@ void Game::onMouseMove(EventMouse* event)
 	mouseLocation.y = Director::getInstance()->getVisibleSize().height - mouseLocation.y;
 	if (playerZone.containsPoint(mouseLocation))
 	{
-		player->updatePosition(mouseLocation);
+		targetPlayerPosition = mouseLocation;
 	}
 	else
 	{
-		player->updatePosition(Vec2(player->getPosition().x, mouseLocation.y));
+		targetPlayerPosition.y = mouseLocation.y;
+	}
+}
+
+void Game::update(float dt)
+{
+	if (std::abs(targetPlayerPosition.x - player->getPosition().x) > 2 ||
+		std::abs(targetPlayerPosition.y - player->getPosition().y) > 2)
+	{
+		Vec2 direction = targetPlayerPosition - player->getPosition();
+		direction.normalize();
+
+		Vec2 newPosition = player->getPosition() + direction * PLAYER_SPEED * dt;
+
+		player->updatePosition(newPosition);
 	}
 }

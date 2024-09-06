@@ -6,5 +6,7 @@
 
 #define PLAYER_COLLISION_BITMASK 0x000001
 
+#define PLAYER_SPEED 300.0
+
 #endif // _DEFINITIONS_H_
 
