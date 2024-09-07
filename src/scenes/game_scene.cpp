@@ -27,9 +27,12 @@ bool Game::init()
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-	Sprite* background = Sprite::create("images/game.png");
-	background->setPosition(Point(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
-	addChild(background);
+	background1 = Sprite::create("images/game.png");
+	background1->setPosition(Point(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
+	addChild(background1);
+	background2 = Sprite::create("images/game.png");
+	background2->setPosition(Point(visibleSize.width * 1.5, background1->getPositionY()));
+	addChild(background2);
 
 	PhysicsBody* playerZoneBody = PhysicsBody::createEdgeBox(Size(visibleSize.width / 3, visibleSize.height), PHYSICSBODY_MATERIAL_DEFAULT, 3);
 	playerZoneBody->setContactTestBitmask(true);
@@ -73,6 +76,29 @@ void Game::onMouseMove(EventMouse* event)
 }
 
 void Game::update(float dt)
+{
+	moveBackground(dt);
+	movePlayer(dt);
+}
+
+void Game::moveBackground(float dt)
+{
+	// TODO const unsigned int acceleration + timer;
+
+	background1->setPositionX(background1->getPositionX() - BACKGROUND_SPEED * dt);
+	background2->setPositionX(background2->getPositionX() - BACKGROUND_SPEED * dt);
+
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+
+	if (background1->getPositionX() < -visibleSize.width / 2) {
+		background1->setPositionX(background2->getPositionX() + visibleSize.width);
+	}
+	if (background2->getPositionX() < -visibleSize.width / 2) {
+		background2->setPositionX(background1->getPositionX() + visibleSize.width);
+	}
+}
+
+void Game::movePlayer(float dt)
 {
 	if (std::abs(targetPlayerPosition.x - player->getPosition().x) > 2 ||
 		std::abs(targetPlayerPosition.y - player->getPosition().y) > 2)

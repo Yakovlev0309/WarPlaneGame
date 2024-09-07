@@ -20,6 +20,12 @@ private:
     void onMouseMove(cocos2d::EventMouse* event);
     void update(float dt);
 
+    void moveBackground(float dt);
+    void movePlayer(float dt);
+
+    cocos2d::Sprite* background1;
+    cocos2d::Sprite* background2;
+
     Player* player;
     cocos2d::Vec2 targetPlayerPosition;
     cocos2d::Rect playerZone;
