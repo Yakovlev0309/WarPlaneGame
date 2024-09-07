@@ -22,6 +22,7 @@ private:
 
     void moveBackground(float dt);
     void movePlayer(float dt);
+    void updateGameTime(float dt);
 
     cocos2d::Sprite* background1;
     cocos2d::Sprite* background2;
@@ -31,6 +32,8 @@ private:
     cocos2d::Rect playerZone;
 
     cocos2d::PhysicsWorld* sceneWorld;
+
+    unsigned int gameTime;
 };
 
 #endif // _GAME_SCENE_H_

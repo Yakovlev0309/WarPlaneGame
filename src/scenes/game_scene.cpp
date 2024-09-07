@@ -34,6 +34,9 @@ bool Game::init()
 	background2->setPosition(Point(visibleSize.width * 1.5, background1->getPositionY()));
 	addChild(background2);
 
+	gameTime = 0;
+	schedule(CC_SCHEDULE_SELECTOR(Game::updateGameTime), 1.0f);
+
 	PhysicsBody* playerZoneBody = PhysicsBody::createEdgeBox(Size(visibleSize.width / 3, visibleSize.height), PHYSICSBODY_MATERIAL_DEFAULT, 3);
 	playerZoneBody->setContactTestBitmask(true);
 
@@ -83,10 +86,18 @@ void Game::update(float dt)
 
 void Game::moveBackground(float dt)
 {
-	// TODO const unsigned int acceleration + timer;
+	static unsigned int acceleration = 1;
+	if (gameTime >= 30)
+	{
+		acceleration = 2;
+	}
+	if (gameTime >= 120)
+	{
+		acceleration = 4;
+	}
 
-	background1->setPositionX(background1->getPositionX() - BACKGROUND_SPEED * dt);
-	background2->setPositionX(background2->getPositionX() - BACKGROUND_SPEED * dt);
+	background1->setPositionX(background1->getPositionX() - BACKGROUND_SPEED * dt * acceleration);
+	background2->setPositionX(background2->getPositionX() - BACKGROUND_SPEED * dt * acceleration);
 
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 
@@ -110,4 +121,9 @@ void Game::movePlayer(float dt)
 
 		player->updatePosition(newPosition);
 	}
+}
+
+void Game::updateGameTime(float dt)
+{
+	gameTime += dt;
 }
