@@ -24,6 +24,11 @@ private:
     void movePlayer(float dt);
     void updateGameTime(float dt);
 
+    void spawnEnemy(float dt);
+
+    cocos2d::Size visibleSize;
+    cocos2d::Vec2 origin;
+
     cocos2d::Sprite* background1;
     cocos2d::Sprite* background2;
 

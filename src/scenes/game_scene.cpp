@@ -1,6 +1,7 @@
 #include "game_scene.h"
 #include "game_over_scene.h"
 #include "../definitions.h"
+#include "../characters/fighter.h"
 
 USING_NS_CC;
 
@@ -24,8 +25,8 @@ bool Game::init()
 		return false;
 	}
 
-	auto visibleSize = Director::getInstance()->getVisibleSize();
-	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+	visibleSize = Director::getInstance()->getVisibleSize();
+	origin = Director::getInstance()->getVisibleOrigin();
 
 	background1 = Sprite::create("images/game.png");
 	background1->setPosition(Point(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
@@ -52,6 +53,8 @@ bool Game::init()
 	EventListenerMouse* mouseListener = EventListenerMouse::create();
 	mouseListener->onMouseMove = CC_CALLBACK_1(Game::onMouseMove, this);
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(mouseListener, this);
+
+	schedule(CC_SCHEDULE_SELECTOR(Game::spawnEnemy), 1.0f);
 
 	scheduleUpdate();
 
@@ -99,12 +102,12 @@ void Game::moveBackground(float dt)
 	background1->setPositionX(background1->getPositionX() - BACKGROUND_SPEED * dt * acceleration);
 	background2->setPositionX(background2->getPositionX() - BACKGROUND_SPEED * dt * acceleration);
 
-	Size visibleSize = Director::getInstance()->getVisibleSize();
-
-	if (background1->getPositionX() < -visibleSize.width / 2) {
+	if (background1->getPositionX() < -visibleSize.width / 2)
+	{
 		background1->setPositionX(background2->getPositionX() + visibleSize.width);
 	}
-	if (background2->getPositionX() < -visibleSize.width / 2) {
+	if (background2->getPositionX() < -visibleSize.width / 2)
+	{
 		background2->setPositionX(background1->getPositionX() + visibleSize.width);
 	}
 }
@@ -126,4 +129,11 @@ void Game::movePlayer(float dt)
 void Game::updateGameTime(float dt)
 {
 	gameTime += dt;
+}
+
+void Game::spawnEnemy(float dt)
+{
+	Fighter* fighter = new Fighter(this, Point(visibleSize.width, visibleSize.height * CCRANDOM_0_1()));
+	MoveBy* fighterAction = MoveBy::create(5.0, Point(-visibleSize.width, 0));
+	fighter->move(fighterAction);
 }
