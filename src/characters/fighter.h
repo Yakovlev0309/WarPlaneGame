@@ -9,6 +9,7 @@ public:
 	Fighter(cocos2d::Scene* gameScene, const cocos2d::Point& position);
 
 	void move(cocos2d::MoveBy* action);
+	cocos2d::Size getSize();
 
 private:
 	cocos2d::Size visibleSize;

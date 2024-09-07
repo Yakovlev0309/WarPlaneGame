@@ -16,7 +16,8 @@ public:
 private:
     void setPhysicsWorld(cocos2d::PhysicsWorld* world) { sceneWorld = world; }
 
-    void gameOver(float dt);
+    void gameOver();
+    bool onContactBegin(const cocos2d::PhysicsContact& contact);
     void onMouseMove(cocos2d::EventMouse* event);
     void update(float dt);
 

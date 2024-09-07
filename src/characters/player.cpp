@@ -12,7 +12,8 @@ Player::Player(Scene* gameScene, const Point& position)
 	planeSprite->setPosition(position);
 
 	PhysicsBody* planeBody = PhysicsBody::createBox(planeSprite->getContentSize());
-	planeBody->setCollisionBitmask(PLAYER_COLLISION_BITMASK);
+	planeBody->setCategoryBitmask(PLAYER_COLLISION_BITMASK);
+	planeBody->setCollisionBitmask(ENEMY_COLLISION_BITMASK);
 	planeBody->setContactTestBitmask(true);
 	planeBody->setGravityEnable(false);
 

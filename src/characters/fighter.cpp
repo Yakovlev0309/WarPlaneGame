@@ -12,7 +12,8 @@ Fighter::Fighter(Scene* gameScene, const Point& position)
 	sprite->setPosition(position);
 
 	PhysicsBody* body = PhysicsBody::createBox(sprite->getContentSize());
-	body->setCollisionBitmask(ENEMY_COLLISION_BITMASK);
+	body->setCategoryBitmask(ENEMY_COLLISION_BITMASK);
+	body->setCollisionBitmask(PLAYER_COLLISION_BITMASK);
 	body->setContactTestBitmask(true);
 	body->setGravityEnable(false);
 
@@ -24,4 +25,9 @@ Fighter::Fighter(Scene* gameScene, const Point& position)
 void Fighter::move(MoveBy* action)
 {
 	sprite->runAction(action);
+}
+
+Size Fighter::getSize()
+{
+	return sprite->getContentSize();
 }

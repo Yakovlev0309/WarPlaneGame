@@ -11,6 +11,9 @@ public:
     virtual bool init();
 
     CREATE_FUNC(GameOver);
+
+private:
+    void openMenu(cocos2d::Ref* sender);
 };
 
 #endif // _GAME_OVER_SCENE_H_

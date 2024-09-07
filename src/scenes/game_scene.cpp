@@ -38,33 +38,52 @@ bool Game::init()
 	gameTime = 0;
 	schedule(CC_SCHEDULE_SELECTOR(Game::updateGameTime), 1.0f);
 
-	PhysicsBody* playerZoneBody = PhysicsBody::createEdgeBox(Size(visibleSize.width / 3, visibleSize.height), PHYSICSBODY_MATERIAL_DEFAULT, 3);
-	playerZoneBody->setContactTestBitmask(true);
+	//PhysicsBody* playerZoneBody = PhysicsBody::createEdgeBox(Size(visibleSize.width / 3, visibleSize.height), PHYSICSBODY_MATERIAL_DEFAULT, 3);
+	//playerZoneBody->setCategoryBitmask(PLAYER_ZONE_COLLISION_BITMASK);
+	//playerZoneBody->setCollisionBitmask(PLAYER_COLLISION_BITMASK);
 
-	Node* playerZoneNode = Node::create();
-	playerZoneNode->setContentSize(Size(visibleSize.width / 3, visibleSize.height));
-	playerZoneNode->setPhysicsBody(playerZoneBody);
-	playerZone = playerZoneNode->getBoundingBox();
-	addChild(playerZoneNode);
+	//Node* playerZoneNode = Node::create();
+	//playerZoneNode->setContentSize(Size(visibleSize.width / 3, visibleSize.height));
+	//playerZoneNode->setPhysicsBody(playerZoneBody);
+	//playerZone = playerZoneNode->getBoundingBox();
+	//addChild(playerZoneNode);
 
 	player = new Player(this, Vec2(visibleSize.width / 2 / 3 + origin.x, visibleSize.height / 2 + origin.y));
 	targetPlayerPosition = player->getPosition();
+
+	EventListenerPhysicsContact* contactListener = EventListenerPhysicsContact::create();
+	contactListener->onContactBegin = CC_CALLBACK_1(Game::onContactBegin, this);
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(contactListener, this);
 
 	EventListenerMouse* mouseListener = EventListenerMouse::create();
 	mouseListener->onMouseMove = CC_CALLBACK_1(Game::onMouseMove, this);
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(mouseListener, this);
 
-	schedule(CC_SCHEDULE_SELECTOR(Game::spawnEnemy), 1.0f);
+	schedule(CC_SCHEDULE_SELECTOR(Game::spawnEnemy), 3.0f);
 
 	scheduleUpdate();
 
 	return true;
 }
 
-void Game::gameOver(float dt)
+void Game::gameOver()
 {
 	Scene* scene = GameOver::createScene();
 	Director::getInstance()->replaceScene(TransitionFade::create(TRANSITION_TIME, scene));
+}
+
+bool Game::onContactBegin(const cocos2d::PhysicsContact& contact)
+{
+	PhysicsBody* a = contact.getShapeA()->getBody();
+	PhysicsBody* b = contact.getShapeB()->getBody();
+
+	if (a->getCollisionBitmask() == ENEMY_COLLISION_BITMASK && b->getCollisionBitmask() == PLAYER_COLLISION_BITMASK ||
+		a->getCollisionBitmask() == PLAYER_COLLISION_BITMASK && b->getCollisionBitmask() == ENEMY_COLLISION_BITMASK)
+	{
+		gameOver();
+	}
+
+	return true;
 }
 
 void Game::onMouseMove(EventMouse* event)
@@ -114,6 +133,8 @@ void Game::moveBackground(float dt)
 
 void Game::movePlayer(float dt)
 {
+	// FIXME сделать возможным движение по 1/3 экрана
+
 	if (std::abs(targetPlayerPosition.x - player->getPosition().x) > 2 ||
 		std::abs(targetPlayerPosition.y - player->getPosition().y) > 2)
 	{
@@ -134,6 +155,6 @@ void Game::updateGameTime(float dt)
 void Game::spawnEnemy(float dt)
 {
 	Fighter* fighter = new Fighter(this, Point(visibleSize.width, visibleSize.height * CCRANDOM_0_1()));
-	MoveBy* fighterAction = MoveBy::create(5.0, Point(-visibleSize.width, 0));
+	MoveBy* fighterAction = MoveBy::create(visibleSize.width / FIGHTER_SPEED, Vec2(-visibleSize.width - fighter->getSize().width / 2, 0));
 	fighter->move(fighterAction);
 }
