@@ -10,6 +10,7 @@ public:
 
 	void updatePosition(const cocos2d::Vec2& position);
 	cocos2d::Vec2 getPosition();
+	cocos2d::Size getSize();
 
 private:
 	cocos2d::Size visibleSize;

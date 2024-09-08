@@ -31,3 +31,8 @@ Vec2 Player::getPosition()
 {
 	return planeSprite->getPosition();
 }
+
+Size Player::getSize()
+{
+	return planeSprite->getContentSize();
+}

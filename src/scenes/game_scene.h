@@ -35,7 +35,6 @@ private:
 
     Player* player;
     cocos2d::Vec2 targetPlayerPosition;
-    cocos2d::Rect playerZone;
 
     cocos2d::PhysicsWorld* sceneWorld;
 

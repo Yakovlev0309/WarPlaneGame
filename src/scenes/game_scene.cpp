@@ -90,7 +90,8 @@ void Game::onMouseMove(EventMouse* event)
 {
 	Vec2 mouseLocation = event->getLocation();
 	mouseLocation.y = Director::getInstance()->getVisibleSize().height - mouseLocation.y;
-	if (playerZone.containsPoint(mouseLocation))
+
+	if (mouseLocation.x < visibleSize.width / 3 - player->getSize().width / 2)
 	{
 		targetPlayerPosition = mouseLocation;
 	}
@@ -133,6 +134,8 @@ void Game::moveBackground(float dt)
 
 void Game::movePlayer(float dt)
 {
+	// TODO починить условие
+
 	if (std::abs(targetPlayerPosition.x - player->getPosition().x) > 2 ||
 		std::abs(targetPlayerPosition.y - player->getPosition().y) > 2)
 	{
