@@ -1,7 +1,7 @@
 #include "game_scene.h"
 #include "game_over_scene.h"
 #include "../definitions.h"
-#include "../characters/fighter.h"
+//#include "../characters/fighter.h"
 
 USING_NS_CC;
 
@@ -51,7 +51,7 @@ bool Game::init()
 	mouseListener->onMouseUp = CC_CALLBACK_1(Game::onMouseUp, this);
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(mouseListener, this);
 
-	schedule(CC_SCHEDULE_SELECTOR(Game::spawnEnemy), 3.0f);
+	schedule(CC_SCHEDULE_SELECTOR(Game::spawnEnemy), 2.0f);
 
 	scheduleUpdate();
 
@@ -165,11 +165,23 @@ void Game::updateGameTime(float dt)
 
 void Game::spawnEnemy(float dt)
 {
-	Fighter* fighter = new Fighter(this, Point(visibleSize.width, visibleSize.height / 3 * 2 * CCRANDOM_0_1() + visibleSize.height / 3));
-	MoveBy* action = MoveBy::create(visibleSize.width / FIGHTER_SPEED, Vec2(-visibleSize.width - fighter->getSize().width / 2, 0));
-	CallFunc* callback = CallFunc::create([&]() {
-		removeChild(fighter->getSprite());
-		});
-	Sequence* sequence = Sequence::create(action, callback, nullptr);
-	fighter->getSprite()->runAction(sequence);
+	Sprite* sprite = Sprite::create("images/fighter.png");
+	sprite->setPosition(Point(visibleSize.width + sprite->getContentSize().width / 2, visibleSize.height / 3 * 2 * CCRANDOM_0_1() + visibleSize.height / 3));
+
+	PhysicsBody* body = PhysicsBody::createBox(sprite->getContentSize());
+	body->setCollisionBitmask(ENEMY_COLLISION_BITMASK);
+	body->setContactTestBitmask(true);
+	body->setGravityEnable(false);
+	body->setVelocity(Vec2(-FIGHTER_SPEED, 0));
+
+	sprite->setPhysicsBody(body);
+
+	addChild(sprite, 10);
+
+	//MoveBy* action = MoveBy::create(visibleSize.width / FIGHTER_SPEED, Vec2(-visibleSize.width, 0));
+	//CallFunc* callback = CallFunc::create([&]() {
+	//	removeChild(sprite);
+	//	});
+	//Sequence* sequence = Sequence::create(action, callback, nullptr);
+	//sprite->runAction(sequence);
 }

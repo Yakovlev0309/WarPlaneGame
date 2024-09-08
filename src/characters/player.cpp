@@ -38,7 +38,7 @@ void Player::shot(float dt)
 	body->setCollisionBitmask(BULLET_COLLISION_BITMASK);
 	body->setContactTestBitmask(true);
 	body->setGravityEnable(true);
-	body->setVelocity(Vec2(BULLET_VELOCITY, 0)); // ???
+	body->setVelocity(Vec2(BULLET_SPEED, 0));
 
 	bulletSprite->setPhysicsBody(body);
 
