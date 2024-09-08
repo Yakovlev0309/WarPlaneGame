@@ -19,6 +19,8 @@ private:
     void gameOver();
     bool onContactBegin(const cocos2d::PhysicsContact& contact);
     void onMouseMove(cocos2d::EventMouse* event);
+    void onMouseDown(cocos2d::EventMouse* event);
+    void onMouseUp(cocos2d::EventMouse* event);
     void update(float dt);
 
     void moveBackground(float dt);
@@ -39,6 +41,9 @@ private:
     cocos2d::PhysicsWorld* sceneWorld;
 
     unsigned int gameTime;
+
+    cocos2d::EventListenerPhysicsContact* contactListener;
+    cocos2d::EventListenerMouse* mouseListener;
 };
 
 #endif // _GAME_SCENE_H_

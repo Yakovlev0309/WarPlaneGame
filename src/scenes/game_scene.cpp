@@ -38,25 +38,17 @@ bool Game::init()
 	gameTime = 0;
 	schedule(CC_SCHEDULE_SELECTOR(Game::updateGameTime), 1.0f);
 
-	//PhysicsBody* playerZoneBody = PhysicsBody::createEdgeBox(Size(visibleSize.width / 3, visibleSize.height), PHYSICSBODY_MATERIAL_DEFAULT, 3);
-	//playerZoneBody->setCategoryBitmask(PLAYER_ZONE_COLLISION_BITMASK);
-	//playerZoneBody->setCollisionBitmask(PLAYER_COLLISION_BITMASK);
-
-	//Node* playerZoneNode = Node::create();
-	//playerZoneNode->setContentSize(Size(visibleSize.width / 3, visibleSize.height));
-	//playerZoneNode->setPhysicsBody(playerZoneBody);
-	//playerZone = playerZoneNode->getBoundingBox();
-	//addChild(playerZoneNode);
-
 	player = new Player(this, Vec2(visibleSize.width / 2 / 3 + origin.x, visibleSize.height / 2 + origin.y));
 	targetPlayerPosition = player->getPosition();
 
-	EventListenerPhysicsContact* contactListener = EventListenerPhysicsContact::create();
+	contactListener = EventListenerPhysicsContact::create();
 	contactListener->onContactBegin = CC_CALLBACK_1(Game::onContactBegin, this);
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(contactListener, this);
 
-	EventListenerMouse* mouseListener = EventListenerMouse::create();
+	mouseListener = EventListenerMouse::create();
 	mouseListener->onMouseMove = CC_CALLBACK_1(Game::onMouseMove, this);
+	mouseListener->onMouseDown = CC_CALLBACK_1(Game::onMouseDown, this);
+	mouseListener->onMouseUp = CC_CALLBACK_1(Game::onMouseUp, this);
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(mouseListener, this);
 
 	schedule(CC_SCHEDULE_SELECTOR(Game::spawnEnemy), 3.0f);
@@ -68,6 +60,10 @@ bool Game::init()
 
 void Game::gameOver()
 {
+	contactListener->setEnabled(false);
+	mouseListener->setEnabled(false);
+	unscheduleAllCallbacks();
+	unscheduleUpdate();
 	Scene* scene = GameOver::createScene();
 	Director::getInstance()->replaceScene(TransitionFade::create(TRANSITION_TIME, scene));
 }
@@ -77,10 +73,16 @@ bool Game::onContactBegin(const cocos2d::PhysicsContact& contact)
 	PhysicsBody* a = contact.getShapeA()->getBody();
 	PhysicsBody* b = contact.getShapeB()->getBody();
 
-	if (a->getCollisionBitmask() == ENEMY_COLLISION_BITMASK && b->getCollisionBitmask() == PLAYER_COLLISION_BITMASK ||
-		a->getCollisionBitmask() == PLAYER_COLLISION_BITMASK && b->getCollisionBitmask() == ENEMY_COLLISION_BITMASK)
+	if ((a->getCollisionBitmask() | b->getCollisionBitmask()) == GAME_OVER_BITMASK)
 	{
+		removeChild(a->getNode());
+		removeChild(b->getNode());
 		gameOver();
+	}
+	else if ((a->getCollisionBitmask() | b->getCollisionBitmask()) == PLAYER_HIT_BITMASK)
+	{
+		removeChild(a->getNode());
+		removeChild(b->getNode());
 	}
 
 	return true;
@@ -99,6 +101,16 @@ void Game::onMouseMove(EventMouse* event)
 	{
 		targetPlayerPosition.y = mouseLocation.y;
 	}
+}
+
+void Game::onMouseDown(EventMouse* event)
+{
+	player->fire();
+}
+
+void Game::onMouseUp(EventMouse* event)
+{
+	player->stopFire();
 }
 
 void Game::update(float dt)
@@ -134,10 +146,8 @@ void Game::moveBackground(float dt)
 
 void Game::movePlayer(float dt)
 {
-	// TODO починить условие
-
-	if (std::abs(targetPlayerPosition.x - player->getPosition().x) > 2 ||
-		std::abs(targetPlayerPosition.y - player->getPosition().y) > 2)
+	if (std::abs(targetPlayerPosition.x - player->getPosition().x) > 5 || // FIXME
+		std::abs(targetPlayerPosition.y - player->getPosition().y) > 5)
 	{
 		Vec2 direction = targetPlayerPosition - player->getPosition();
 		direction.normalize();
