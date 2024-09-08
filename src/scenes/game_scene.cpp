@@ -165,7 +165,7 @@ void Game::updateGameTime(float dt)
 
 void Game::spawnEnemy(float dt)
 {
-	Fighter* fighter = new Fighter(this, Point(visibleSize.width, visibleSize.height * CCRANDOM_0_1()));
+	Fighter* fighter = new Fighter(this, Point(visibleSize.width, visibleSize.height / 3 * 2 * CCRANDOM_0_1() + visibleSize.height / 3));
 	MoveBy* action = MoveBy::create(visibleSize.width / FIGHTER_SPEED, Vec2(-visibleSize.width - fighter->getSize().width / 2, 0));
 	CallFunc* callback = CallFunc::create([&]() {
 		removeChild(fighter->getSprite());

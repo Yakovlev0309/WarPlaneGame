@@ -38,17 +38,18 @@ void Player::shot(float dt)
 	body->setCollisionBitmask(BULLET_COLLISION_BITMASK);
 	body->setContactTestBitmask(true);
 	body->setGravityEnable(true);
+	body->setVelocity(Vec2(BULLET_VELOCITY, 0)); // ???
 
 	bulletSprite->setPhysicsBody(body);
 
 	scene->addChild(bulletSprite, 90);
 
-	MoveBy* shotAction = MoveBy::create(visibleSize.width / BULLET_SPEED, Vec2(visibleSize.width, 0));
-	CallFunc* callback = CallFunc::create([&]() {
-		scene->removeChild(bulletSprite);
-		});
-	Sequence* shotSequence = Sequence::create(shotAction, callback, nullptr);
-	bulletSprite->runAction(shotSequence);
+	//MoveBy* shotAction = MoveBy::create(visibleSize.width / BULLET_SPEED, Vec2(visibleSize.width, 0));
+	//CallFunc* callback = CallFunc::create([&]() {
+	//	scene->removeChild(bulletSprite);
+	//	});
+	//Sequence* shotSequence = Sequence::create(shotAction, callback, nullptr);
+	//bulletSprite->runAction(shotSequence);
 }
 
 void Player::stopFire()
