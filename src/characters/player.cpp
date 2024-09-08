@@ -26,10 +26,7 @@ Player::Player(Scene* gameScene, const Point& position) : scene(gameScene)
 
 Player::~Player()
 {
-	if (planeSprite)
-	{
-		scene->removeChild(planeSprite);
-	}
+	scene->removeChild(planeSprite);
 }
 
 void Player::fire()

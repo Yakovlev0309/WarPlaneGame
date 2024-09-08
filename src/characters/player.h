@@ -30,4 +30,3 @@ private:
 };
 
 #endif // _PLAYER_H_
-

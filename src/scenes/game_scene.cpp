@@ -1,7 +1,9 @@
 #include "game_scene.h"
 #include "game_over_scene.h"
 #include "../definitions.h"
-//#include "../characters/fighter.h"
+#include "../characters/bomber.h"
+#include "../characters/fighter.h"
+#include "../characters/bird.h"
 
 USING_NS_CC;
 
@@ -84,22 +86,22 @@ bool Game::onContactBegin(const cocos2d::PhysicsContact& contact)
 	switch (a->getCollisionBitmask() | b->getCollisionBitmask())
 	{
 	case (COLLISION_WITH_ENEMY_BITMASK):
-		if (a->getCollisionBitmask() != PLAYER_COLLISION_BITMASK)
+		if (a->getCollisionBitmask() == PLAYER_COLLISION_BITMASK)
 		{
 			removeChild(b->getNode());
 		}
-		else if (b->getCollisionBitmask() != PLAYER_COLLISION_BITMASK)
+		else if (b->getCollisionBitmask() == PLAYER_COLLISION_BITMASK)
 		{
 			removeChild(a->getNode());
 		}
 		gameOver();
 		break;
 	case COLLISION_WITH_BIRD_BITMASK:
-		if (a->getCollisionBitmask() != PLAYER_COLLISION_BITMASK)
+		if (a->getCollisionBitmask() == PLAYER_COLLISION_BITMASK)
 		{
 			removeChild(b->getNode());
 		}
-		else if (b->getCollisionBitmask() != PLAYER_COLLISION_BITMASK)
+		else if (b->getCollisionBitmask() == PLAYER_COLLISION_BITMASK)
 		{
 			removeChild(a->getNode());
 		}
@@ -153,7 +155,7 @@ void Game::moveBackground(float dt)
 	{
 		acceleration = 2;
 	}
-	if (gameTime >= 120)
+	else if (gameTime >= 120)
 	{
 		acceleration = 4;
 	}
@@ -197,15 +199,13 @@ void Game::updateGameTime(float dt)
 
 void Game::spawnEnemy(float dt)
 {
-	std::string image = "";
 	float height = 0;
-	int bitmask = 0;
 	float speed = 0;
+	Enemy* enemy;
 
 	switch (rand() % 3)
 	{
 	case 0:
-		image = "images/bomber.png";
 		switch (rand() % 2)
 		{
 		case 0:
@@ -217,12 +217,10 @@ void Game::spawnEnemy(float dt)
 			speed = MEDIUM_SPEED;
 			break;
 		}
-		bitmask = ENEMY_COLLISION_BITMASK;
+		enemy = new Bomber(this, height, speed);
 		break;
 	case 1:
-		image = "images/fighter.png";
 		height = visibleSize.height / 3 * CCRANDOM_0_1() + visibleSize.height / 3;
-		bitmask = ENEMY_COLLISION_BITMASK;
 		switch (rand() % 2)
 		{
 		case 0:
@@ -232,33 +230,12 @@ void Game::spawnEnemy(float dt)
 			speed = MEDIUM_SPEED;
 			break;
 		}
+		enemy = new Fighter(this, height, speed);
 		break;
 	default:
-		image = "images/bird.png";
 		height = visibleSize.height / 3 * CCRANDOM_0_1();
-		bitmask = BIRD_COLLISION_BITMASK;
 		speed = LOW_SPEED;
+		enemy = new Bird(this, height, speed);
 		break;
 	}
-
-	Sprite* sprite = Sprite::create(image);
-	sprite->setPosition(Point(visibleSize.width + sprite->getContentSize().width / 2, height));
-
-	PhysicsBody* body = PhysicsBody::createBox(sprite->getContentSize());
-	body->setCollisionBitmask(bitmask);
-	body->setContactTestBitmask(true);
-	body->setGravityEnable(false);
-	body->setRotationEnable(false);
-	body->setVelocity(Vec2(-speed, 0));
-
-	sprite->setPhysicsBody(body);
-
-	addChild(sprite, 10); // TODO удаление объектов, которые выходят за край экрана
-
-	//MoveBy* action = MoveBy::create(visibleSize.width / FIGHTER_SPEED, Vec2(-visibleSize.width, 0));
-	//CallFunc* callback = CallFunc::create([&]() {
-	//	removeChild(sprite);
-	//	});
-	//Sequence* sequence = Sequence::create(action, callback, nullptr);
-	//sprite->runAction(sequence);
 }
