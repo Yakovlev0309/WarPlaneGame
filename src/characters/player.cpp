@@ -24,6 +24,14 @@ Player::Player(Scene* gameScene, const Point& position) : scene(gameScene)
 	scene->addChild(planeSprite, 100);
 }
 
+Player::~Player()
+{
+	if (planeSprite)
+	{
+		scene->removeChild(planeSprite);
+	}
+}
+
 void Player::fire()
 {
 	scheduler->schedule(SEL_SCHEDULE(&Player::shot), this, PLAYER_GUN_RATE, false);
@@ -70,4 +78,9 @@ Vec2 Player::getPosition()
 Size Player::getSize()
 {
 	return planeSprite->getContentSize();
+}
+
+Sprite* Player::getSprite()
+{
+	return planeSprite;
 }

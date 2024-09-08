@@ -7,12 +7,15 @@ class Player : public cocos2d::Ref
 {
 public:
 	Player(cocos2d::Scene* gameScene, const cocos2d::Point& position);
+	~Player();
+
 	void fire();
 	void stopFire();
 
 	void updatePosition(const cocos2d::Vec2& position);
 	cocos2d::Vec2 getPosition();
 	cocos2d::Size getSize();
+	cocos2d::Sprite* getSprite();
 
 private:
 	void shot(float dt);

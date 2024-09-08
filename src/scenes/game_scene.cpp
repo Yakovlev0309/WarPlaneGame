@@ -55,17 +55,25 @@ bool Game::init()
 
 	scheduleUpdate();
 
+	srand((unsigned)time(NULL));
+
 	return true;
 }
 
 void Game::gameOver()
 {
-	contactListener->setEnabled(false);
 	mouseListener->setEnabled(false);
+	contactListener->setEnabled(false);
+
+	onMouseUp(nullptr);
+
 	unscheduleAllCallbacks();
 	unscheduleUpdate();
+
 	Scene* scene = GameOver::createScene();
 	Director::getInstance()->replaceScene(TransitionFade::create(TRANSITION_TIME, scene));
+
+	delete player;
 }
 
 bool Game::onContactBegin(const cocos2d::PhysicsContact& contact)
@@ -73,16 +81,17 @@ bool Game::onContactBegin(const cocos2d::PhysicsContact& contact)
 	PhysicsBody* a = contact.getShapeA()->getBody();
 	PhysicsBody* b = contact.getShapeB()->getBody();
 
-	if ((a->getCollisionBitmask() | b->getCollisionBitmask()) == GAME_OVER_BITMASK)
+	switch (a->getCollisionBitmask() | b->getCollisionBitmask())
 	{
-		removeChild(a->getNode());
-		removeChild(b->getNode());
+	case (COLLISION_WITH_ENEMY_BITMASK, COLLISION_WITH_BIRD_BITMASK):
+		// TODO удаление
 		gameOver();
-	}
-	else if ((a->getCollisionBitmask() | b->getCollisionBitmask()) == PLAYER_HIT_BITMASK)
-	{
+		break;
+	case PLAYER_HIT_BITMASK:
+		// remove bullet and target
 		removeChild(a->getNode());
 		removeChild(b->getNode());
+		break;
 	}
 
 	return true;
@@ -156,6 +165,11 @@ void Game::movePlayer(float dt)
 
 		player->updatePosition(newPosition);
 	}
+
+	if (player->getPosition().y - player->getSize().height / 2 <= 10)
+	{
+		gameOver();
+	}
 }
 
 void Game::updateGameTime(float dt)
@@ -165,18 +179,63 @@ void Game::updateGameTime(float dt)
 
 void Game::spawnEnemy(float dt)
 {
-	Sprite* sprite = Sprite::create("images/fighter.png");
-	sprite->setPosition(Point(visibleSize.width + sprite->getContentSize().width / 2, visibleSize.height / 3 * 2 * CCRANDOM_0_1() + visibleSize.height / 3));
+	std::string image = "";
+	float height = 0;
+	int bitmask = 0;
+	float speed = 0;
+
+	switch (rand() % 3)
+	{
+	case 0:
+		image = "images/bomber.png";
+		switch (rand() % 2)
+		{
+		case 0:
+			height = visibleSize.height / 3 * CCRANDOM_0_1() + visibleSize.height / 3 * 2;
+			speed = HIGH_SPEED;
+			break;
+		default:
+			height = visibleSize.height / 3 * CCRANDOM_0_1() + visibleSize.height / 3;
+			speed = MEDIUM_SPEED;
+			break;
+		}
+		bitmask = ENEMY_COLLISION_BITMASK;
+		break;
+	case 1:
+		image = "images/fighter.png";
+		height = visibleSize.height / 3 * CCRANDOM_0_1() + visibleSize.height / 3;
+		bitmask = ENEMY_COLLISION_BITMASK;
+		switch (rand() % 2)
+		{
+		case 0:
+			speed = HIGH_SPEED;
+			break;
+		default:
+			speed = MEDIUM_SPEED;
+			break;
+		}
+		break;
+	default:
+		image = "images/bird.png";
+		height = visibleSize.height / 3 * CCRANDOM_0_1();
+		bitmask = BIRD_COLLISION_BITMASK;
+		speed = LOW_SPEED;
+		break;
+	}
+
+	Sprite* sprite = Sprite::create(image);
+	sprite->setPosition(Point(visibleSize.width + sprite->getContentSize().width / 2, height));
 
 	PhysicsBody* body = PhysicsBody::createBox(sprite->getContentSize());
-	body->setCollisionBitmask(ENEMY_COLLISION_BITMASK);
+	body->setCollisionBitmask(bitmask);
 	body->setContactTestBitmask(true);
 	body->setGravityEnable(false);
-	body->setVelocity(Vec2(-FIGHTER_SPEED, 0));
+	body->setRotationEnable(false);
+	body->setVelocity(Vec2(-speed, 0));
 
 	sprite->setPhysicsBody(body);
 
-	addChild(sprite, 10);
+	addChild(sprite, 10); // TODO удаление объектов, которые выходят за край экрана
 
 	//MoveBy* action = MoveBy::create(visibleSize.width / FIGHTER_SPEED, Vec2(-visibleSize.width, 0));
 	//CallFunc* callback = CallFunc::create([&]() {
