@@ -22,12 +22,12 @@ Fighter::Fighter(Scene* gameScene, const Point& position)
 	gameScene->addChild(sprite, 10); // why 10?
 }
 
-void Fighter::move(MoveBy* action)
-{
-	sprite->runAction(action);
-}
-
 Size Fighter::getSize()
 {
 	return sprite->getContentSize();
+}
+
+Sprite* Fighter::getSprite()
+{
+	return sprite;
 }

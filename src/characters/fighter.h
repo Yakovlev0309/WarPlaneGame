@@ -8,8 +8,8 @@ class Fighter
 public:
 	Fighter(cocos2d::Scene* gameScene, const cocos2d::Point& position);
 
-	void move(cocos2d::MoveBy* action);
 	cocos2d::Size getSize();
+	cocos2d::Sprite* getSprite();
 
 private:
 	cocos2d::Size visibleSize;

@@ -133,8 +133,6 @@ void Game::moveBackground(float dt)
 
 void Game::movePlayer(float dt)
 {
-	// FIXME сделать возможным движение по 1/3 экрана
-
 	if (std::abs(targetPlayerPosition.x - player->getPosition().x) > 2 ||
 		std::abs(targetPlayerPosition.y - player->getPosition().y) > 2)
 	{
@@ -155,6 +153,10 @@ void Game::updateGameTime(float dt)
 void Game::spawnEnemy(float dt)
 {
 	Fighter* fighter = new Fighter(this, Point(visibleSize.width, visibleSize.height * CCRANDOM_0_1()));
-	MoveBy* fighterAction = MoveBy::create(visibleSize.width / FIGHTER_SPEED, Vec2(-visibleSize.width - fighter->getSize().width / 2, 0));
-	fighter->move(fighterAction);
+	MoveBy* action = MoveBy::create(visibleSize.width / FIGHTER_SPEED, Vec2(-visibleSize.width - fighter->getSize().width / 2, 0));
+	CallFunc* callback = CallFunc::create([&]() {
+		removeChild(fighter->getSprite());
+		});
+	Sequence* sequence = Sequence::create(action, callback, nullptr);
+	fighter->getSprite()->runAction(sequence);
 }
