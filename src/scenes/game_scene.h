@@ -28,6 +28,8 @@ private:
     void updateGameTime(float dt);
 
     void spawnEnemy(float dt);
+    void changeRandomBirdHeight(float dt);
+    void resetCurrentBirdVelocity(float dt);
 
     cocos2d::Size visibleSize;
     cocos2d::Vec2 origin;
@@ -44,6 +46,8 @@ private:
 
     cocos2d::EventListenerPhysicsContact* contactListener;
     cocos2d::EventListenerMouse* mouseListener;
+
+    cocos2d::Sprite* currentBird;
 };
 
 #endif // _GAME_SCENE_H_

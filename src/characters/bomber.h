@@ -7,11 +7,10 @@
 class Bomber : public Enemy
 {
 public:
-	Bomber(cocos2d::Scene* gameScene, float height, float speed);
-	~Bomber();
+	static void create(float height, float speed);
+	static void removeOutOfScreenSprites();
 
-private:
-	cocos2d::Scheduler* scheduler;
+	static cocos2d::Vector<cocos2d::Sprite*> bombers;
 };
 
 #endif // _BOMBER_H_

@@ -3,16 +3,11 @@
 
 USING_NS_CC;
 
-Bomber::Bomber(Scene* gameScene, float height, float speed)
+Vector<Sprite*> Bomber::bombers;
+
+void Bomber::create(float height, float speed)
 {
-	scene = gameScene;
-
-	visibleSize = Director::getInstance()->getVisibleSize();
-	origin = Director::getInstance()->getVisibleOrigin();
-
-	scheduler = Director::getInstance()->getScheduler();
-
-	sprite = Sprite::create("images/bomber.png");
+	Sprite* sprite = Sprite::create("images/bomber.png");
 	sprite->setPosition(Point(visibleSize.width + sprite->getContentSize().width / 2, height));
 
 	PhysicsBody* body = PhysicsBody::createBox(sprite->getContentSize());
@@ -24,10 +19,25 @@ Bomber::Bomber(Scene* gameScene, float height, float speed)
 
 	sprite->setPhysicsBody(body);
 
-	scene->addChild(sprite, 100);
+	if (scene)
+	{
+		scene->addChild(sprite, 100);
+	}
+
+	enemies.pushBack(sprite);
+	bombers.pushBack(sprite);
 }
 
-Bomber::~Bomber()
+void Bomber::removeOutOfScreenSprites()
 {
-	scene->removeChild(sprite);
+	for (Sprite* bomber : bombers)
+	{
+		if (!isOnScreen(bomber))
+		{
+			scene->removeChild(bomber, true);
+			enemies.eraseObject(bomber);
+			bombers.eraseObject(bomber);
+			break;
+		}
+	}
 }

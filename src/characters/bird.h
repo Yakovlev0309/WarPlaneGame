@@ -7,11 +7,10 @@
 class Bird : public Enemy
 {
 public:
-	Bird(cocos2d::Scene* gameScene, float height, float speed);
-	~Bird();
+	static void create(float height, float speed);
+	static void removeOutOfScreenSprites();
 
-private:
-	cocos2d::Scheduler* scheduler;
+	static cocos2d::Vector<cocos2d::Sprite*> birds;
 };
 
 #endif // _BIRD_H_

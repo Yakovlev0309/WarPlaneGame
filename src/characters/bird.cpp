@@ -3,16 +3,11 @@
 
 USING_NS_CC;
 
-Bird::Bird(Scene* gameScene, float height, float speed)
+Vector<Sprite*> Bird::birds;
+
+void Bird::create(float height, float speed)
 {
-	scene = gameScene;
-
-	visibleSize = Director::getInstance()->getVisibleSize();
-	origin = Director::getInstance()->getVisibleOrigin();
-
-	scheduler = Director::getInstance()->getScheduler();
-
-	sprite = Sprite::create("images/bird.png");
+	Sprite* sprite = Sprite::create("images/bird.png");
 	sprite->setPosition(Point(visibleSize.width + sprite->getContentSize().width / 2, height));
 
 	PhysicsBody* body = PhysicsBody::createBox(sprite->getContentSize());
@@ -24,10 +19,25 @@ Bird::Bird(Scene* gameScene, float height, float speed)
 
 	sprite->setPhysicsBody(body);
 
-	scene->addChild(sprite, 100);
+	if (scene)
+	{
+		scene->addChild(sprite, 100);
+	}
+
+	enemies.pushBack(sprite);
+	birds.pushBack(sprite);
 }
 
-Bird::~Bird()
+void Bird::removeOutOfScreenSprites()
 {
-	scene->removeChild(sprite);
+	for (Sprite* bird : birds)
+	{
+		if (!isOnScreen(bird))
+		{
+			scene->removeChild(bird, true);
+			enemies.eraseObject(bird);
+			birds.eraseObject(bird);
+			break;
+		}
+	}
 }

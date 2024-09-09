@@ -3,16 +3,19 @@
 
 #include "cocos2d.h"
 
-class Enemy : public cocos2d::Ref
+class Enemy
 {
+public:
+	static void init(cocos2d::Scene* gameScene);
+
 protected:
-	Enemy();
+	static bool isOnScreen(cocos2d::Sprite* sprite);
 
-	cocos2d::Scene* scene;
-	cocos2d::Size visibleSize;
-	cocos2d::Vec2 origin;
+	static cocos2d::Scene* scene;
+	static cocos2d::Size visibleSize;
+	static cocos2d::Vec2 origin;
 
-	cocos2d::Sprite* sprite;
+	static cocos2d::Vector<cocos2d::Sprite*> enemies;
 };
 
 #endif // _ENEMY_H_

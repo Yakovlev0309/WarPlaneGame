@@ -37,9 +37,6 @@ bool Game::init()
 	background2->setPosition(Point(visibleSize.width * 1.5, background1->getPositionY()));
 	addChild(background2);
 
-	gameTime = 0;
-	schedule(CC_SCHEDULE_SELECTOR(Game::updateGameTime), 1.0f);
-
 	player = new Player(this, Vec2(visibleSize.width / 2 / 3 + origin.x, visibleSize.height / 2 + origin.y));
 	targetPlayerPosition = player->getPosition();
 
@@ -53,7 +50,16 @@ bool Game::init()
 	mouseListener->onMouseUp = CC_CALLBACK_1(Game::onMouseUp, this);
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(mouseListener, this);
 
-	schedule(CC_SCHEDULE_SELECTOR(Game::spawnEnemy), 2.0f);
+	Bomber::init(this);
+	Fighter::init(this);
+	Bird::init(this);
+
+	currentBird = nullptr;
+
+	gameTime = 0;
+	schedule(CC_SCHEDULE_SELECTOR(Game::updateGameTime), 1.0f);
+	schedule(CC_SCHEDULE_SELECTOR(Game::spawnEnemy), 1.0f);
+	schedule(CC_SCHEDULE_SELECTOR(Game::changeRandomBirdHeight), BIRD_HEIGHT_CHANGING_FREQ);
 
 	scheduleUpdate();
 
@@ -146,6 +152,8 @@ void Game::update(float dt)
 {
 	moveBackground(dt);
 	movePlayer(dt);
+
+	Bird::removeOutOfScreenSprites();
 }
 
 void Game::moveBackground(float dt)
@@ -201,7 +209,6 @@ void Game::spawnEnemy(float dt)
 {
 	float height = 0;
 	float speed = 0;
-	Enemy* enemy;
 
 	switch (rand() % 3)
 	{
@@ -217,7 +224,7 @@ void Game::spawnEnemy(float dt)
 			speed = MEDIUM_SPEED;
 			break;
 		}
-		enemy = new Bomber(this, height, speed);
+		Bomber::create(height, speed);
 		break;
 	case 1:
 		height = visibleSize.height / 3 * CCRANDOM_0_1() + visibleSize.height / 3;
@@ -230,12 +237,52 @@ void Game::spawnEnemy(float dt)
 			speed = MEDIUM_SPEED;
 			break;
 		}
-		enemy = new Fighter(this, height, speed);
+		Fighter::create(height, speed);
 		break;
 	default:
 		height = (visibleSize.height / 3 - visibleSize.height * GROUND_HEIGHT_FACTOR) * CCRANDOM_0_1() + visibleSize.height * GROUND_HEIGHT_FACTOR;
 		speed = LOW_SPEED;
-		enemy = new Bird(this, height, speed);
+		Bird::create(height, speed);
 		break;
 	}
+}
+
+void Game::changeRandomBirdHeight(float dt)
+{
+	if (Bird::birds.size() > 0)
+	{
+		if (rand() % 2 == 0) // 50% chance to change the height
+		{
+			float lower = visibleSize.height * GROUND_HEIGHT_FACTOR;
+			float higher = visibleSize.height / 3;
+
+			int index = rand() % Bird::birds.size();
+			int minus = rand() % 2;
+
+			currentBird = Bird::birds.at(index);
+
+			if (minus == 0)
+			{
+				if (currentBird->getPositionY() - BIRD_HEIGHT_SPEED * BIRD_HEIGHT_TIME > lower)
+				{
+					currentBird->getPhysicsBody()->setVelocity(Vec2(currentBird->getPhysicsBody()->getVelocity().x, -BIRD_HEIGHT_SPEED));
+					scheduleOnce(CC_SCHEDULE_SELECTOR(Game::resetCurrentBirdVelocity), BIRD_HEIGHT_TIME);
+				}
+			}
+			else
+			{
+				if (currentBird->getPositionY() + BIRD_HEIGHT_SPEED * BIRD_HEIGHT_TIME < higher)
+				{
+					currentBird->getPhysicsBody()->setVelocity(Vec2(currentBird->getPhysicsBody()->getVelocity().x, BIRD_HEIGHT_SPEED));
+					scheduleOnce(CC_SCHEDULE_SELECTOR(Game::resetCurrentBirdVelocity), BIRD_HEIGHT_TIME);
+				}
+			}
+		}
+	}
+}
+
+void Game::resetCurrentBirdVelocity(float dt)
+{
+	currentBird->getPhysicsBody()->setVelocity(Vec2(currentBird->getPhysicsBody()->getVelocity().x, 0));
+	currentBird = nullptr;
 }

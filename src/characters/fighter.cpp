@@ -3,16 +3,14 @@
 
 USING_NS_CC;
 
-Fighter::Fighter(Scene* gameScene, float height, float speed)
+Vector<Sprite*> Fighter::fighters;
+Scheduler* Fighter::scheduler;
+
+void Fighter::create(float height, float speed)
 {
-	scene = gameScene;
-
-	visibleSize = Director::getInstance()->getVisibleSize();
-	origin = Director::getInstance()->getVisibleOrigin();
-
 	scheduler = Director::getInstance()->getScheduler();
 
-	sprite = Sprite::create("images/fighter.png");
+	Sprite* sprite = Sprite::create("images/fighter.png");
 	sprite->setPosition(Point(visibleSize.width + sprite->getContentSize().width / 2, height));
 
 	PhysicsBody* body = PhysicsBody::createBox(sprite->getContentSize());
@@ -24,36 +22,51 @@ Fighter::Fighter(Scene* gameScene, float height, float speed)
 
 	sprite->setPhysicsBody(body);
 
-	scene->addChild(sprite, 100);
+	if (scene)
+	{
+		scene->addChild(sprite, 100);
+	}
+
+	enemies.pushBack(sprite);
+	fighters.pushBack(sprite);
 }
 
-Fighter::~Fighter()
+void Fighter::removeOutOfScreenSprites()
 {
-	scene->removeChild(sprite);
+	for (Sprite* fighter : fighters)
+	{
+		if (!isOnScreen(fighter))
+		{
+			scene->removeChild(fighter, true);
+			enemies.eraseObject(fighter);
+			fighters.eraseObject(fighter);
+			break;
+		}
+	}
 }
 
-void Fighter::fire()
-{
-	scheduler->schedule(SEL_SCHEDULE(&Fighter::shot), this, PLAYER_GUN_RATE, false);
-}
-
-void Fighter::shot(float dt)
-{
-	Sprite* bulletSprite = Sprite::create("images/bullet.png");
-	bulletSprite->setPosition(sprite->getPosition());
-
-	PhysicsBody* body = PhysicsBody::createBox(bulletSprite->getContentSize());
-	body->setCollisionBitmask(BULLET_COLLISION_BITMASK);
-	body->setContactTestBitmask(true);
-	body->setGravityEnable(true);
-	body->setVelocity(Vec2(-BULLET_SPEED, 0));
-
-	bulletSprite->setPhysicsBody(body);
-
-	scene->addChild(bulletSprite, 90);
-}
-
-void Fighter::stopFire()
-{
-	scheduler->unschedule(SEL_SCHEDULE(&Fighter::shot), this);
-}
+//void Fighter::fire()
+//{
+//	scheduler->schedule(SEL_SCHEDULE(&Fighter::shot), this, PLAYER_GUN_RATE, false);
+//}
+//
+//void Fighter::shot(float dt)
+//{
+//	Sprite* bulletSprite = Sprite::create("images/bullet.png");
+//	bulletSprite->setPosition(sprite->getPosition());
+//
+//	PhysicsBody* body = PhysicsBody::createBox(bulletSprite->getContentSize());
+//	body->setCollisionBitmask(BULLET_COLLISION_BITMASK);
+//	body->setContactTestBitmask(true);
+//	body->setGravityEnable(true);
+//	body->setVelocity(Vec2(-BULLET_SPEED, 0));
+//
+//	bulletSprite->setPhysicsBody(body);
+//
+//	scene->addChild(bulletSprite, 90);
+//}
+//
+//void Fighter::stopFire()
+//{
+//	scheduler->unschedule(SEL_SCHEDULE(&Fighter::shot), this);
+//}
