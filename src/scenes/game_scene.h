@@ -30,6 +30,7 @@ private:
     void spawnEnemy(float dt);
     void changeRandomBirdHeight(float dt);
     void resetCurrentBirdVelocity(float dt);
+    void removeOutOfScreenEnemies(float dt);
 
     cocos2d::Size visibleSize;
     cocos2d::Vec2 origin;

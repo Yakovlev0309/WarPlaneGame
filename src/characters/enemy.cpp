@@ -17,8 +17,6 @@ void Enemy::init(Scene* gameScene)
 
 bool Enemy::isOnScreen(Sprite* sprite)
 {
-	//return scene->getBoundingBox().containsPoint(sprite->getPosition());
-
 	if (sprite->getPosition().x <= visibleSize.width + sprite->getContentSize().width &&
 		sprite->getPosition().x >= -sprite->getContentSize().width)
 	{

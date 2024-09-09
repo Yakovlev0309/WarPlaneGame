@@ -59,7 +59,8 @@ bool Game::init()
 	gameTime = 0;
 	schedule(CC_SCHEDULE_SELECTOR(Game::updateGameTime), 1.0f);
 	schedule(CC_SCHEDULE_SELECTOR(Game::spawnEnemy), 1.0f);
-	schedule(CC_SCHEDULE_SELECTOR(Game::changeRandomBirdHeight), BIRD_HEIGHT_CHANGING_FREQ);
+	schedule(CC_SCHEDULE_SELECTOR(Game::changeRandomBirdHeight), BIRD_HEIGHT_CHANGING_INTERVAL);
+	schedule(CC_SCHEDULE_SELECTOR(Game::removeOutOfScreenEnemies), OUT_OF_SCREEN_REMOVING_INTERVAL);
 
 	scheduleUpdate();
 
@@ -152,8 +153,6 @@ void Game::update(float dt)
 {
 	moveBackground(dt);
 	movePlayer(dt);
-
-	Bird::removeOutOfScreenSprites();
 }
 
 void Game::moveBackground(float dt)
@@ -285,4 +284,11 @@ void Game::resetCurrentBirdVelocity(float dt)
 {
 	currentBird->getPhysicsBody()->setVelocity(Vec2(currentBird->getPhysicsBody()->getVelocity().x, 0));
 	currentBird = nullptr;
+}
+
+void Game::removeOutOfScreenEnemies(float dt)
+{
+	Bomber::removeOutOfScreenSprites();
+	Fighter::removeOutOfScreenSprites();
+	Bird::removeOutOfScreenSprites();
 }
