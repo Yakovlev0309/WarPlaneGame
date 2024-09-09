@@ -3,6 +3,7 @@
 
 #define TRANSITION_TIME 0.5
 #define SPLASH_SCENE_TIME 2.0
+#define GROUND_HEIGHT_FACTOR 0.05
 
 // collision bitmasks
 #define PLAYER_COLLISION_BITMASK 0x0001

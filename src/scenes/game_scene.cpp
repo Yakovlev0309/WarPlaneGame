@@ -175,7 +175,7 @@ void Game::moveBackground(float dt)
 
 void Game::movePlayer(float dt)
 {
-	if (std::abs(targetPlayerPosition.x - player->getPosition().x) > 5 || // FIXME
+	if (std::abs(targetPlayerPosition.x - player->getPosition().x) > 5 || // TODO исправить
 		std::abs(targetPlayerPosition.y - player->getPosition().y) > 5)
 	{
 		Vec2 direction = targetPlayerPosition - player->getPosition();
@@ -186,7 +186,7 @@ void Game::movePlayer(float dt)
 		player->updatePosition(newPosition);
 	}
 
-	if (player->getPosition().y - player->getSize().height / 2 <= 10)
+	if (player->getPosition().y - player->getSize().height / 2 <= visibleSize.height * GROUND_HEIGHT_FACTOR)
 	{
 		gameOver();
 	}
@@ -233,7 +233,7 @@ void Game::spawnEnemy(float dt)
 		enemy = new Fighter(this, height, speed);
 		break;
 	default:
-		height = visibleSize.height / 3 * CCRANDOM_0_1();
+		height = (visibleSize.height / 3 - visibleSize.height * GROUND_HEIGHT_FACTOR) * CCRANDOM_0_1() + visibleSize.height * GROUND_HEIGHT_FACTOR;
 		speed = LOW_SPEED;
 		enemy = new Bird(this, height, speed);
 		break;
