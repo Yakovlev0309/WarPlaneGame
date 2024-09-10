@@ -57,6 +57,19 @@ bool Game::init()
 	currentBird = nullptr;
 
 	gameTime = 0;
+	gameTimeLabel = Label::createWithTTF("seconds: 0", "fonts/Marker Felt.ttf", visibleSize.height * GAME_TIME_FONT_SIZE_FACTOR);
+	gameTimeLabel->setColor(Color3B::ORANGE);
+	gameTimeLabel->setPosition(Point(SCORE_N_TIME_PADDING_FACTOR * visibleSize.width + gameTimeLabel->getContentSize().width / 2,
+		visibleSize.height - gameTimeLabel->getContentSize().height));
+	addChild(gameTimeLabel, 200);
+
+	score = 0;
+	scoreLabel = Label::createWithTTF("score: 0", "fonts/Marker Felt.ttf", visibleSize.height * SCORE_FONT_SIZE_FACTOR);
+	scoreLabel->setColor(Color3B::WHITE);
+	scoreLabel->setPosition(Point(SCORE_N_TIME_PADDING_FACTOR * visibleSize.width + scoreLabel->getContentSize().width / 2,
+		visibleSize.height - scoreLabel->getContentSize().height - gameTimeLabel->getContentSize().height));
+	addChild(scoreLabel, 200);
+
 	schedule(CC_SCHEDULE_SELECTOR(Game::updateGameTime), 1.0f);
 	schedule(CC_SCHEDULE_SELECTOR(Game::spawnEnemy), 1.0f);
 	schedule(CC_SCHEDULE_SELECTOR(Game::changeRandomBirdHeight), BIRD_HEIGHT_CHANGING_INTERVAL);
@@ -79,7 +92,7 @@ void Game::gameOver()
 	unscheduleAllCallbacks();
 	unscheduleUpdate();
 
-	Scene* scene = GameOver::createScene();
+	Scene* scene = GameOver::createScene(score);
 	Director::getInstance()->replaceScene(TransitionFade::create(TRANSITION_TIME, scene));
 
 	delete player;
@@ -108,6 +121,8 @@ bool Game::onContactBegin(const cocos2d::PhysicsContact& contact)
 		// remove bullet and target
 		removeChild(a->getNode());
 		removeChild(b->getNode());
+		score++;
+		scoreLabel->setString("score: " + std::to_string(score));
 		break;
 	}
 
@@ -192,6 +207,7 @@ void Game::movePlayer(float dt)
 void Game::updateGameTime(float dt)
 {
 	gameTime += dt;
+	gameTimeLabel->setString("seconds: " + std::to_string(gameTime));
 }
 
 void Game::spawnEnemy(float dt)

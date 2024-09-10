@@ -43,12 +43,16 @@ private:
 
     cocos2d::PhysicsWorld* sceneWorld;
 
-    unsigned int gameTime;
-
     cocos2d::EventListenerPhysicsContact* contactListener;
     cocos2d::EventListenerMouse* mouseListener;
 
     cocos2d::Sprite* currentBird;
+
+    unsigned int gameTime;
+    unsigned int score;
+
+    cocos2d::Label* gameTimeLabel;
+    cocos2d::Label* scoreLabel;
 };
 
 #endif // _GAME_SCENE_H_

@@ -4,8 +4,11 @@
 
 USING_NS_CC;
 
-Scene* GameOver::createScene()
+unsigned int score;
+
+Scene* GameOver::createScene(unsigned int gameScore)
 {
+    score = gameScore;
     return GameOver::create();
 }
 
@@ -29,6 +32,25 @@ bool GameOver::init()
     Menu* menu = Menu::create(menuButton, NULL);
     menu->setPosition(Point::ZERO);
     addChild(menu);
+
+    UserDefault* scoreDB = UserDefault::getInstance();
+    int highScore = scoreDB->getIntegerForKey("HIGHSCORE", 0);
+    if (score > highScore)
+    {
+        highScore = score;
+        scoreDB->setIntegerForKey("HIGHSCORE", highScore);
+        scoreDB->flush();
+    }
+
+    Label* currentScoreLabel = Label::createWithTTF(std::to_string(score), "fonts/Marker Felt.ttf", visibleSize.height * SCORE_FONT_SIZE_FACTOR);
+    currentScoreLabel->setColor(Color3B::WHITE);
+    currentScoreLabel->setPosition(visibleSize.width * 0.25 + origin.x, visibleSize.height / 2 + origin.y);
+    addChild(currentScoreLabel);
+
+    Label* highScoreLabel = Label::createWithTTF(std::to_string(highScore), "fonts/Marker Felt.ttf", visibleSize.height * SCORE_FONT_SIZE_FACTOR);
+    highScoreLabel->setColor(Color3B::YELLOW);
+    highScoreLabel->setPosition(Point(visibleSize.width * 0.75 + origin.x, visibleSize.height / 2 + origin.y));
+    addChild(highScoreLabel);
 
     return true;
 }
