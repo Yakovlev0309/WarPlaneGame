@@ -14,6 +14,7 @@ public:
 
 private:
     void openMenu(cocos2d::Ref* sender);
+    void retry(cocos2d::Ref* sender);
 };
 
 #endif // _GAME_OVER_SCENE_H_

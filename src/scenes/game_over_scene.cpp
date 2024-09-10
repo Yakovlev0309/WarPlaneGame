@@ -1,5 +1,6 @@
 #include "game_over_scene.h"
 #include "main_menu_scene.h"
+#include "game_scene.h"
 #include "../definitions.h"
 
 USING_NS_CC;
@@ -29,7 +30,10 @@ bool GameOver::init()
     MenuItemImage* menuButton = MenuItemImage::create("images/menu_button.png", "images/menu_button_clicked.png", CC_CALLBACK_1(GameOver::openMenu, this));
     menuButton->setPosition(Point(visibleSize.width / 2 + origin.x, visibleSize.height / 3 + origin.y));
 
-    Menu* menu = Menu::create(menuButton, NULL);
+    MenuItemImage* retryButton = MenuItemImage::create("images/retry_button.png", "images/retry_button_clicked.png", CC_CALLBACK_1(GameOver::retry, this));
+    retryButton->setPosition(Point(visibleSize.width / 2 + origin.x, menuButton->getPosition().y - menuButton->getContentSize().height * 2));
+
+    Menu* menu = Menu::create(menuButton, retryButton, NULL);
     menu->setPosition(Point::ZERO);
     addChild(menu);
 
@@ -58,5 +62,11 @@ bool GameOver::init()
 void GameOver::openMenu(cocos2d::Ref* sender)
 {
     Scene* scene = MainMenu::createScene();
+    Director::getInstance()->replaceScene(TransitionFade::create(TRANSITION_TIME, scene));
+}
+
+void GameOver::retry(cocos2d::Ref* sender)
+{
+    Scene* scene = Game::createScene();
     Director::getInstance()->replaceScene(TransitionFade::create(TRANSITION_TIME, scene));
 }
