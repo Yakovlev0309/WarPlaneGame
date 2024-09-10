@@ -92,25 +92,13 @@ bool Game::onContactBegin(const cocos2d::PhysicsContact& contact)
 
 	switch (a->getCategoryBitmask() | b->getCategoryBitmask())
 	{
-	case (COLLISION_WITH_ENEMY_BITMASK):
-		// remove enemy
+	case COLLISION_WITH_ENEMY_BITMASK: case COLLISION_WITH_BIRD_BITMASK:
+		// remove enemy or bird
 		if (a->getCategoryBitmask() == PLAYER_COLLISION_BITMASK)
 		{
 			removeChild(b->getNode());
 		}
-		else if (b->getCategoryBitmask() == PLAYER_COLLISION_BITMASK)
-		{
-			removeChild(a->getNode());
-		}
-		gameOver();
-		break;
-	case COLLISION_WITH_BIRD_BITMASK:
-		// remove bird
-		if (a->getCategoryBitmask() == PLAYER_COLLISION_BITMASK)
-		{
-			removeChild(b->getNode());
-		}
-		else if (b->getCategoryBitmask() == PLAYER_COLLISION_BITMASK)
+		else
 		{
 			removeChild(a->getNode());
 		}
