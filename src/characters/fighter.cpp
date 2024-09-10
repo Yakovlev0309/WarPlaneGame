@@ -14,11 +14,13 @@ void Fighter::create(float height, float speed)
 	sprite->setPosition(Point(visibleSize.width + sprite->getContentSize().width / 2, height));
 
 	PhysicsBody* body = PhysicsBody::createBox(sprite->getContentSize());
-	body->setCollisionBitmask(ENEMY_COLLISION_BITMASK);
-	body->setContactTestBitmask(true);
 	body->setGravityEnable(false);
 	body->setRotationEnable(false);
 	body->setVelocity(Vec2(-speed, 0));
+
+	body->setCategoryBitmask(ENEMY_COLLISION_BITMASK);
+	body->setCollisionBitmask(PLAYER_HIT_BITMASK | COLLISION_WITH_ENEMY_BITMASK);
+	body->setContactTestBitmask(PLAYER_HIT_BITMASK | COLLISION_WITH_ENEMY_BITMASK);
 
 	sprite->setPhysicsBody(body);
 

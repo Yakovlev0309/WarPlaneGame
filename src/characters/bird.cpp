@@ -11,11 +11,13 @@ void Bird::create(float height, float speed)
 	sprite->setPosition(Point(visibleSize.width + sprite->getContentSize().width / 2, height));
 
 	PhysicsBody* body = PhysicsBody::createBox(sprite->getContentSize());
-	body->setCollisionBitmask(BIRD_COLLISION_BITMASK);
-	body->setContactTestBitmask(true);
 	body->setGravityEnable(false);
 	body->setRotationEnable(false);
 	body->setVelocity(Vec2(-speed, 0));
+
+	body->setCategoryBitmask(BIRD_COLLISION_BITMASK);
+	body->setCollisionBitmask(COLLISION_WITH_BIRD_BITMASK);
+	body->setContactTestBitmask(COLLISION_WITH_BIRD_BITMASK);
 
 	sprite->setPhysicsBody(body);
 

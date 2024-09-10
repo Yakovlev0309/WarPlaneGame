@@ -14,10 +14,12 @@ Player::Player(Scene* gameScene, const Point& position) : scene(gameScene)
 	planeSprite->setPosition(position);
 
 	PhysicsBody* planeBody = PhysicsBody::createBox(planeSprite->getContentSize());
-	planeBody->setCollisionBitmask(PLAYER_COLLISION_BITMASK);
-	planeBody->setContactTestBitmask(true);
 	planeBody->setGravityEnable(false);
 	planeBody->setRotationEnable(false);
+
+	planeBody->setCategoryBitmask(PLAYER_COLLISION_BITMASK);
+	planeBody->setCollisionBitmask(COLLISION_WITH_ENEMY_BITMASK | COLLISION_WITH_BIRD_BITMASK);
+	planeBody->setContactTestBitmask(COLLISION_WITH_ENEMY_BITMASK | COLLISION_WITH_BIRD_BITMASK);
 
 	planeSprite->setPhysicsBody(planeBody);
 
@@ -40,21 +42,16 @@ void Player::shot(float dt)
 	bulletSprite->setPosition(planeSprite->getPosition());
 
 	PhysicsBody* body = PhysicsBody::createBox(bulletSprite->getContentSize());
-	body->setCollisionBitmask(BULLET_COLLISION_BITMASK);
-	body->setContactTestBitmask(true);
 	body->setGravityEnable(true);
 	body->setVelocity(Vec2(BULLET_SPEED, 0));
+
+	body->setCategoryBitmask(BULLET_COLLISION_BITMASK);
+	body->setCollisionBitmask(PLAYER_HIT_BITMASK);
+	body->setContactTestBitmask(PLAYER_HIT_BITMASK);
 
 	bulletSprite->setPhysicsBody(body);
 
 	scene->addChild(bulletSprite, 90);
-
-	//MoveBy* shotAction = MoveBy::create(visibleSize.width / BULLET_SPEED, Vec2(visibleSize.width, 0));
-	//CallFunc* callback = CallFunc::create([&]() {
-	//	scene->removeChild(bulletSprite);
-	//	});
-	//Sequence* shotSequence = Sequence::create(shotAction, callback, nullptr);
-	//bulletSprite->runAction(shotSequence);
 }
 
 void Player::stopFire()
