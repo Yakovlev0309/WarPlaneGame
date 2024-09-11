@@ -12,6 +12,7 @@ public:
 
 	static void removeOutOfScreenSprites();
 	static void removeByPhysicsBody(cocos2d::PhysicsBody* body);
+	static void removeAll();
 
 	static std::vector<Bomber*> bombers;
 

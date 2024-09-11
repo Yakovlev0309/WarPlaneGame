@@ -87,7 +87,11 @@ bool Game::init()
 void Game::gameOver()
 {
 	onMouseUp(nullptr);
-	Fighter::stopAllFirings();
+	//Fighter::stopAllFirings();
+
+	Bomber::removeAll();
+	Fighter::removeAll();
+	Bird::removeAll();
 
 	mouseListener->setEnabled(false);
 	contactListener->setEnabled(false);
@@ -136,13 +140,11 @@ bool Game::onContactBegin(const cocos2d::PhysicsContact& contact)
 		// remove bird
 		if (a->getCategoryBitmask() == PLAYER_COLLISION_BITMASK)
 		{
-			removeChild(b->getNode());
-			//Bird::removeByPhysicsBody(a);
+			Bird::removeByPhysicsBody(a);
 		}
 		else
 		{
-			removeChild(a->getNode());
-			//Bird::removeByPhysicsBody(a);
+			Bird::removeByPhysicsBody(a);
 		}
 		gameOver();
 		break;
@@ -311,7 +313,7 @@ void Game::spawnEnemy(float dt)
 	default:
 		height = (visibleSize.height / 3 - visibleSize.height * GROUND_HEIGHT_FACTOR) * CCRANDOM_0_1() + visibleSize.height * GROUND_HEIGHT_FACTOR;
 		speed = LOW_SPEED;
-		Bird::create(height, speed);
+		new Bird(height, speed);
 		break;
 	}
 }
@@ -326,13 +328,14 @@ void Game::changeRandomBirdHeight(float dt)
 			float higher = visibleSize.height / 3;
 
 			currentBirdIndex = rand() % Bird::birds.size();
-			Sprite* bird = Bird::birds.at(currentBirdIndex);
+			Bird* bird = Bird::birds.at(currentBirdIndex);
 
 			if (rand() % 2 == 0)
 			{
 				if (bird->getPositionY() - BIRD_HEIGHT_SPEED * BIRD_HEIGHT_TIME > lower)
 				{
-					bird->getPhysicsBody()->setVelocity(Vec2(bird->getPhysicsBody()->getVelocity().x, -BIRD_HEIGHT_SPEED));
+					//bird->getPhysicsBody()->setVelocity(Vec2(bird->getPhysicsBody()->getVelocity().x, -BIRD_HEIGHT_SPEED));
+					bird->setYVelocity(-BIRD_HEIGHT_SPEED);
 					scheduleOnce(CC_SCHEDULE_SELECTOR(Game::resetCurrentBirdVelocity), BIRD_HEIGHT_TIME);
 				}
 			}
@@ -340,7 +343,8 @@ void Game::changeRandomBirdHeight(float dt)
 			{
 				if (bird->getPositionY() + BIRD_HEIGHT_SPEED * BIRD_HEIGHT_TIME < higher)
 				{
-					bird->getPhysicsBody()->setVelocity(Vec2(bird->getPhysicsBody()->getVelocity().x, BIRD_HEIGHT_SPEED));
+					//bird->getPhysicsBody()->setVelocity(Vec2(bird->getPhysicsBody()->getVelocity().x, BIRD_HEIGHT_SPEED));
+					bird->setYVelocity(BIRD_HEIGHT_SPEED);
 					scheduleOnce(CC_SCHEDULE_SELECTOR(Game::resetCurrentBirdVelocity), BIRD_HEIGHT_TIME);
 				}
 			}
@@ -350,7 +354,10 @@ void Game::changeRandomBirdHeight(float dt)
 
 void Game::resetCurrentBirdVelocity(float dt)
 {
-	Bird::birds.at(currentBirdIndex)->getPhysicsBody()->setVelocity(Vec2(Bird::birds.at(currentBirdIndex)->getPhysicsBody()->getVelocity().x, 0));
+	if (currentBirdIndex < Bird::birds.size())
+	{
+		Bird::birds.at(currentBirdIndex)->setYVelocity(0);
+	}
 	currentBirdIndex = -1;
 }
 

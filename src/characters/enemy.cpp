@@ -6,7 +6,6 @@ USING_NS_CC;
 Scene* Enemy::scene = nullptr;
 Size Enemy::visibleSize;
 Vec2 Enemy::origin;
-std::vector<Sprite*> Enemy::enemies;
 
 void Enemy::init(Scene* gameScene)
 {
@@ -19,8 +18,8 @@ void Enemy::init(Scene* gameScene)
 
 bool Enemy::isOnScreen(Sprite* sprite)
 {
-	//if (sprite->getPosition().x <= visibleSize.width + sprite->getContentSize().width &&
-	//	sprite->getPosition().x >= -sprite->getContentSize().width)
+	if (sprite->getPosition().x <= visibleSize.width + sprite->getContentSize().width &&
+		sprite->getPosition().x >= -sprite->getContentSize().width)
 	//if (sprite->getPosition().x >= -sprite->getContentSize().width)
 	{
 		return true;

@@ -3,11 +3,11 @@
 
 USING_NS_CC;
 
-std::vector<Sprite*> Bird::birds;
+std::vector<Bird*> Bird::birds;
 
-void Bird::create(float height, float speed)
+Bird::Bird(float height, float speed)
 {
-	Sprite* sprite = Sprite::create("images/bird.png");
+	sprite = Sprite::create("images/bird.png");
 	sprite->setPosition(Point(visibleSize.width + sprite->getContentSize().width / 2, height));
 
 	PhysicsBody* body = PhysicsBody::createBox(sprite->getContentSize());
@@ -26,28 +26,58 @@ void Bird::create(float height, float speed)
 		scene->addChild(sprite, 100);
 	}
 
-	enemies.push_back(sprite);
-	birds.push_back(sprite);
+	birds.push_back(this);
+}
+
+Bird::~Bird()
+{
+	auto b = std::find(birds.begin(), birds.end(), this);
+	if (b != birds.end())
+	{
+		birds.erase(b);
+	}
+	scene->removeChild(sprite, true);
 }
 
 void Bird::removeOutOfScreenSprites()
 {
-	for (Sprite* bird : birds)
+	for (Bird* bird : birds)
 	{
-		if (!isOnScreen(bird))
+		if (!isOnScreen(bird->sprite))
 		{
-			scene->removeChild(bird, true);
-			auto enemy = std::find(enemies.begin(), enemies.end(), bird);
-			if (enemy != enemies.end())
-			{
-				enemies.erase(enemy);
-			}
-			auto b = std::find(birds.begin(), birds.end(), bird);
-			if (b != birds.end())
-			{
-				birds.erase(b);
-			}
+			delete bird;
 			break;
 		}
 	}
+}
+
+void Bird::removeByPhysicsBody(PhysicsBody* body)
+{
+	for (Bird* bird : birds)
+	{
+		if (bird->sprite->getPhysicsBody() == body)
+		{
+			delete bird;
+			break;
+		}
+	}
+}
+
+void Bird::removeAll()
+{
+	for (Bird* bird : birds)
+	{
+		delete bird;
+	}
+	birds.clear();
+}
+
+void Bird::setYVelocity(float yVelocity)
+{
+	sprite->getPhysicsBody()->setVelocity(Vec2(sprite->getPhysicsBody()->getVelocity().x, yVelocity));
+}
+
+float Bird::getPositionY()
+{
+	return sprite->getPositionY();
 }

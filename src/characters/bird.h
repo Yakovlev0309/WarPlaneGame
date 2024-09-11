@@ -7,10 +7,20 @@
 class Bird : public Enemy
 {
 public:
-	static void create(float height, float speed);
-	static void removeOutOfScreenSprites();
+	Bird(float height, float speed);
+	~Bird();
 
-	static std::vector<cocos2d::Sprite*> birds;
+	static void removeOutOfScreenSprites();
+	static void removeByPhysicsBody(cocos2d::PhysicsBody* body);
+	static void removeAll();
+
+	void setYVelocity(float yVelocity);
+	float getPositionY();
+
+	static std::vector<Bird*> birds;
+
+private:
+	cocos2d::Sprite* sprite;
 };
 
 #endif // _BIRD_H_

@@ -26,17 +26,11 @@ Bomber::Bomber(float height, float speed)
 		scene->addChild(sprite, 100);
 	}
 
-	enemies.push_back(sprite);
 	bombers.push_back(this);
 }
 
 Bomber::~Bomber()
 {
-	auto enemy = std::find(enemies.begin(), enemies.end(), sprite);
-	if (enemy != enemies.end())
-	{
-		enemies.erase(enemy);
-	}
 	auto bomber = std::find(bombers.begin(), bombers.end(), this);
 	if (bomber != bombers.end())
 	{
@@ -67,4 +61,13 @@ void Bomber::removeByPhysicsBody(PhysicsBody* body)
 			break;
 		}
 	}
+}
+
+void Bomber::removeAll()
+{
+	for (Bomber* bomber : bombers)
+	{
+		delete bomber;
+	}
+	bombers.clear();
 }

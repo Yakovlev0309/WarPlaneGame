@@ -27,18 +27,12 @@ Fighter::Fighter(float height, float speed)
 		scene->addChild(sprite, 100);
 	}
 
-	enemies.push_back(sprite);
 	fighters.push_back(this);
 }
 
 Fighter::~Fighter()
 {
 	stopFire();
-	auto enemy = std::find(enemies.begin(), enemies.end(), sprite);
-	if (enemy != enemies.end())
-	{
-		enemies.erase(enemy);
-	}
 	auto fighter = std::find(fighters.begin(), fighters.end(), this);
 	if (fighter != fighters.end())
 	{
@@ -67,12 +61,6 @@ void Fighter::stopAllFirings()
 		firingFighters.at(i)->stopFire();
 	}
 	firingFighters.clear();
-
-	// Удаление всех истребителей
-	//for (int i = 0; i < fighters.size(); ++i)
-	//{
-	//	delete fighters.at(i);
-	//}
 }
 
 void Fighter::removeByPhysicsBody(PhysicsBody* body)
@@ -85,6 +73,15 @@ void Fighter::removeByPhysicsBody(PhysicsBody* body)
 			break;
 		}
 	}
+}
+
+void Fighter::removeAll()
+{
+	for (Fighter* fighter : fighters)
+	{
+		delete fighter;
+	}
+	fighters.clear();
 }
 
 void Fighter::fire()

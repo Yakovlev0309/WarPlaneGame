@@ -17,8 +17,6 @@ protected:
 	static cocos2d::Vec2 origin;
 
 	//static cocos2d::Scheduler* scheduler;
-
-	static std::vector<cocos2d::Sprite*> enemies;
 };
 
 #endif // _ENEMY_H_

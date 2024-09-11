@@ -13,6 +13,7 @@ public:
 	static void removeOutOfScreenSprites();
 	static void stopAllFirings();
 	static void removeByPhysicsBody(cocos2d::PhysicsBody* body);
+	static void removeAll();
 
 	void fire();
 
