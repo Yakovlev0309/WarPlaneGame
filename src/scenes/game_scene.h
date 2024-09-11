@@ -30,6 +30,7 @@ private:
     void spawnEnemy(float dt);
     void changeRandomBirdHeight(float dt);
     void resetCurrentBirdVelocity(float dt);
+    void randomFightersFire(float dt);
     void removeOutOfScreenEnemies(float dt);
 
     cocos2d::Size visibleSize;
@@ -46,7 +47,8 @@ private:
     cocos2d::EventListenerPhysicsContact* contactListener;
     cocos2d::EventListenerMouse* mouseListener;
 
-    cocos2d::Sprite* currentBird;
+    int currentBirdIndex;
+    int currentFighterIndex;
 
     unsigned int gameTime;
     unsigned int score;

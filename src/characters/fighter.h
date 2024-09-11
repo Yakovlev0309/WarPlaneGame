@@ -7,18 +7,23 @@
 class Fighter : public Enemy
 {
 public:
-	static void create(float height, float speed);
+	Fighter(float height, float dpeed);
+	~Fighter();
+
 	static void removeOutOfScreenSprites();
+	static void stopAllFirings();
+	static void removeByPhysicsBody(cocos2d::PhysicsBody* body);
 
-	static void fire();
-	static void stopFire();
+	void fire();
 
-	static cocos2d::Vector<cocos2d::Sprite*> fighters;
+	static std::vector<Fighter*> fighters;
+	static std::vector<Fighter*> firingFighters;
 
 private:
-	static void shot(float dt);
+	void shot();
+	void stopFire();
 
-	static cocos2d::Scheduler* scheduler;
+	cocos2d::Sprite* sprite;
 };
 
 #endif // _FIGHTER_H_

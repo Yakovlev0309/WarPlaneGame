@@ -54,7 +54,8 @@ bool Game::init()
 	Fighter::init(this);
 	Bird::init(this);
 
-	currentBird = nullptr;
+	currentBirdIndex = -1;
+	currentFighterIndex = -1;
 
 	gameTime = 0;
 	gameTimeLabel = Label::createWithTTF("seconds: 0", "fonts/Marker Felt.ttf", visibleSize.height * GAME_TIME_FONT_SIZE_FACTOR);
@@ -73,6 +74,7 @@ bool Game::init()
 	schedule(CC_SCHEDULE_SELECTOR(Game::updateGameTime), 1.0f);
 	schedule(CC_SCHEDULE_SELECTOR(Game::spawnEnemy), 1.0f);
 	schedule(CC_SCHEDULE_SELECTOR(Game::changeRandomBirdHeight), BIRD_HEIGHT_CHANGING_INTERVAL);
+	schedule(CC_SCHEDULE_SELECTOR(Game::randomFightersFire), FIGHTER_FIRE_INTERVAL);
 	schedule(CC_SCHEDULE_SELECTOR(Game::removeOutOfScreenEnemies), OUT_OF_SCREEN_REMOVING_INTERVAL);
 
 	scheduleUpdate();
@@ -84,10 +86,11 @@ bool Game::init()
 
 void Game::gameOver()
 {
+	onMouseUp(nullptr);
+	Fighter::stopAllFirings();
+
 	mouseListener->setEnabled(false);
 	contactListener->setEnabled(false);
-
-	onMouseUp(nullptr);
 
 	unscheduleAllCallbacks();
 	unscheduleUpdate();
@@ -105,24 +108,85 @@ bool Game::onContactBegin(const cocos2d::PhysicsContact& contact)
 
 	switch (a->getCategoryBitmask() | b->getCategoryBitmask())
 	{
-	case COLLISION_WITH_ENEMY_BITMASK: case COLLISION_WITH_BIRD_BITMASK:
-		// remove enemy or bird
+	case COLLISION_WITH_BOMBER_BITMASK:
+		// remove bomber
+		if (a->getCategoryBitmask() == PLAYER_COLLISION_BITMASK)
+		{
+			Bomber::removeByPhysicsBody(b);
+		}
+		else
+		{
+			Bomber::removeByPhysicsBody(a);
+		}
+		gameOver();
+		break;
+	case COLLISION_WITH_FIGHTER_BITMASK:
+		// remove fighter
+		if (a->getCategoryBitmask() == PLAYER_COLLISION_BITMASK)
+		{
+			Fighter::removeByPhysicsBody(b);
+		}
+		else
+		{
+			Fighter::removeByPhysicsBody(a);
+		}
+		gameOver();
+		break;
+	case COLLISION_WITH_BIRD_BITMASK:
+		// remove bird
 		if (a->getCategoryBitmask() == PLAYER_COLLISION_BITMASK)
 		{
 			removeChild(b->getNode());
+			//Bird::removeByPhysicsBody(a);
 		}
 		else
 		{
 			removeChild(a->getNode());
+			//Bird::removeByPhysicsBody(a);
 		}
 		gameOver();
 		break;
-	case PLAYER_HIT_BITMASK:
+	case PLAYER_HIT_BOMBER_BITMASK:
 		// remove bullet and target
-		removeChild(a->getNode());
-		removeChild(b->getNode());
+		if (a->getCategoryBitmask() == BULLET_COLLISION_BITMASK)
+		{
+			Bomber::removeByPhysicsBody(b);
+			removeChild(a->getNode());
+		}
+		else
+		{
+			Bomber::removeByPhysicsBody(a);
+			removeChild(b->getNode());
+		}
 		score++;
 		scoreLabel->setString("score: " + std::to_string(score));
+		break;
+	case PLAYER_HIT_FIGHTER_BITMASK:
+		// remove bullet and target
+		if (a->getCategoryBitmask() == BULLET_COLLISION_BITMASK)
+		{
+			Fighter::removeByPhysicsBody(b);
+			removeChild(a->getNode());
+		}
+		else
+		{
+			Fighter::removeByPhysicsBody(a);
+			removeChild(b->getNode());
+		}
+		score++;
+		scoreLabel->setString("score: " + std::to_string(score));
+		break;
+	case FIGHTER_HIT_PLAYER_BITMASK:
+		// remove bullet and target
+		if (a->getCategoryBitmask() == FIGHTER_BULLET_COLLISION_BITMASK)
+		{
+			removeChild(a->getNode());
+		}
+		else
+		{
+			removeChild(b->getNode());
+		}
+		gameOver();
 		break;
 	}
 
@@ -229,7 +293,7 @@ void Game::spawnEnemy(float dt)
 			speed = MEDIUM_SPEED;
 			break;
 		}
-		Bomber::create(height, speed);
+		new Bomber(height, speed);
 		break;
 	case 1:
 		height = visibleSize.height / 3 * CCRANDOM_0_1() + visibleSize.height / 3;
@@ -242,7 +306,7 @@ void Game::spawnEnemy(float dt)
 			speed = MEDIUM_SPEED;
 			break;
 		}
-		Fighter::create(height, speed);
+		new Fighter(height, speed);
 		break;
 	default:
 		height = (visibleSize.height / 3 - visibleSize.height * GROUND_HEIGHT_FACTOR) * CCRANDOM_0_1() + visibleSize.height * GROUND_HEIGHT_FACTOR;
@@ -261,24 +325,22 @@ void Game::changeRandomBirdHeight(float dt)
 			float lower = visibleSize.height * GROUND_HEIGHT_FACTOR;
 			float higher = visibleSize.height / 3;
 
-			int index = rand() % Bird::birds.size();
-			int minus = rand() % 2;
+			currentBirdIndex = rand() % Bird::birds.size();
+			Sprite* bird = Bird::birds.at(currentBirdIndex);
 
-			currentBird = Bird::birds.at(index);
-
-			if (minus == 0)
+			if (rand() % 2 == 0)
 			{
-				if (currentBird->getPositionY() - BIRD_HEIGHT_SPEED * BIRD_HEIGHT_TIME > lower)
+				if (bird->getPositionY() - BIRD_HEIGHT_SPEED * BIRD_HEIGHT_TIME > lower)
 				{
-					currentBird->getPhysicsBody()->setVelocity(Vec2(currentBird->getPhysicsBody()->getVelocity().x, -BIRD_HEIGHT_SPEED));
+					bird->getPhysicsBody()->setVelocity(Vec2(bird->getPhysicsBody()->getVelocity().x, -BIRD_HEIGHT_SPEED));
 					scheduleOnce(CC_SCHEDULE_SELECTOR(Game::resetCurrentBirdVelocity), BIRD_HEIGHT_TIME);
 				}
 			}
 			else
 			{
-				if (currentBird->getPositionY() + BIRD_HEIGHT_SPEED * BIRD_HEIGHT_TIME < higher)
+				if (bird->getPositionY() + BIRD_HEIGHT_SPEED * BIRD_HEIGHT_TIME < higher)
 				{
-					currentBird->getPhysicsBody()->setVelocity(Vec2(currentBird->getPhysicsBody()->getVelocity().x, BIRD_HEIGHT_SPEED));
+					bird->getPhysicsBody()->setVelocity(Vec2(bird->getPhysicsBody()->getVelocity().x, BIRD_HEIGHT_SPEED));
 					scheduleOnce(CC_SCHEDULE_SELECTOR(Game::resetCurrentBirdVelocity), BIRD_HEIGHT_TIME);
 				}
 			}
@@ -288,8 +350,19 @@ void Game::changeRandomBirdHeight(float dt)
 
 void Game::resetCurrentBirdVelocity(float dt)
 {
-	currentBird->getPhysicsBody()->setVelocity(Vec2(currentBird->getPhysicsBody()->getVelocity().x, 0));
-	currentBird = nullptr;
+	Bird::birds.at(currentBirdIndex)->getPhysicsBody()->setVelocity(Vec2(Bird::birds.at(currentBirdIndex)->getPhysicsBody()->getVelocity().x, 0));
+	currentBirdIndex = -1;
+}
+
+void Game::randomFightersFire(float dt)
+{
+	if (Fighter::fighters.size() > 0)
+	{
+		if (rand() % 2 == 0) // 50% chance to start a fire
+		{
+			Fighter::fighters.at(rand() % Fighter::fighters.size())->fire();
+		}
+	}
 }
 
 void Game::removeOutOfScreenEnemies(float dt)

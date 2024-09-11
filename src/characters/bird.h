@@ -10,7 +10,7 @@ public:
 	static void create(float height, float speed);
 	static void removeOutOfScreenSprites();
 
-	static cocos2d::Vector<cocos2d::Sprite*> birds;
+	static std::vector<cocos2d::Sprite*> birds;
 };
 
 #endif // _BIRD_H_

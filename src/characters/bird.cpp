@@ -3,7 +3,7 @@
 
 USING_NS_CC;
 
-Vector<Sprite*> Bird::birds;
+std::vector<Sprite*> Bird::birds;
 
 void Bird::create(float height, float speed)
 {
@@ -26,8 +26,8 @@ void Bird::create(float height, float speed)
 		scene->addChild(sprite, 100);
 	}
 
-	enemies.pushBack(sprite);
-	birds.pushBack(sprite);
+	enemies.push_back(sprite);
+	birds.push_back(sprite);
 }
 
 void Bird::removeOutOfScreenSprites()
@@ -37,8 +37,16 @@ void Bird::removeOutOfScreenSprites()
 		if (!isOnScreen(bird))
 		{
 			scene->removeChild(bird, true);
-			enemies.eraseObject(bird);
-			birds.eraseObject(bird);
+			auto enemy = std::find(enemies.begin(), enemies.end(), bird);
+			if (enemy != enemies.end())
+			{
+				enemies.erase(enemy);
+			}
+			auto b = std::find(birds.begin(), birds.end(), bird);
+			if (b != birds.end())
+			{
+				birds.erase(b);
+			}
 			break;
 		}
 	}

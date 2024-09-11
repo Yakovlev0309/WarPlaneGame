@@ -7,10 +7,16 @@
 class Bomber : public Enemy
 {
 public:
-	static void create(float height, float speed);
-	static void removeOutOfScreenSprites();
+	Bomber(float height, float dpeed);
+	~Bomber();
 
-	static cocos2d::Vector<cocos2d::Sprite*> bombers;
+	static void removeOutOfScreenSprites();
+	static void removeByPhysicsBody(cocos2d::PhysicsBody* body);
+
+	static std::vector<Bomber*> bombers;
+
+private:
+	cocos2d::Sprite* sprite;
 };
 
 #endif // _BOMBER_H_

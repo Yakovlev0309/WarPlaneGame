@@ -3,11 +3,11 @@
 
 USING_NS_CC;
 
-Vector<Sprite*> Bomber::bombers;
+std::vector<Bomber*> Bomber::bombers;
 
-void Bomber::create(float height, float speed)
+Bomber::Bomber(float height, float speed)
 {
-	Sprite* sprite = Sprite::create("images/bomber.png");
+	sprite = Sprite::create("images/bomber.png");
 	sprite->setPosition(Point(visibleSize.width + sprite->getContentSize().width / 2, height));
 
 	PhysicsBody* body = PhysicsBody::createBox(sprite->getContentSize());
@@ -15,9 +15,9 @@ void Bomber::create(float height, float speed)
 	body->setRotationEnable(false);
 	body->setVelocity(Vec2(-speed, 0));
 
-	body->setCategoryBitmask(ENEMY_COLLISION_BITMASK);
-	body->setCollisionBitmask(PLAYER_HIT_BITMASK | COLLISION_WITH_ENEMY_BITMASK);
-	body->setContactTestBitmask(PLAYER_HIT_BITMASK | COLLISION_WITH_ENEMY_BITMASK);
+	body->setCategoryBitmask(BOMBER_COLLISION_BITMASK);
+	body->setCollisionBitmask(PLAYER_HIT_BOMBER_BITMASK | COLLISION_WITH_BOMBER_BITMASK);
+	body->setContactTestBitmask(PLAYER_HIT_BOMBER_BITMASK | COLLISION_WITH_BOMBER_BITMASK);
 
 	sprite->setPhysicsBody(body);
 
@@ -26,19 +26,44 @@ void Bomber::create(float height, float speed)
 		scene->addChild(sprite, 100);
 	}
 
-	enemies.pushBack(sprite);
-	bombers.pushBack(sprite);
+	enemies.push_back(sprite);
+	bombers.push_back(this);
+}
+
+Bomber::~Bomber()
+{
+	auto enemy = std::find(enemies.begin(), enemies.end(), sprite);
+	if (enemy != enemies.end())
+	{
+		enemies.erase(enemy);
+	}
+	auto bomber = std::find(bombers.begin(), bombers.end(), this);
+	if (bomber != bombers.end())
+	{
+		bombers.erase(bomber);
+	}
+	scene->removeChild(sprite, true);
 }
 
 void Bomber::removeOutOfScreenSprites()
 {
-	for (Sprite* bomber : bombers)
+	for (Bomber* bomber : bombers)
 	{
-		if (!isOnScreen(bomber))
+		if (!isOnScreen(bomber->sprite))
 		{
-			scene->removeChild(bomber, true);
-			enemies.eraseObject(bomber);
-			bombers.eraseObject(bomber);
+			delete bomber;
+			break;
+		}
+	}
+}
+
+void Bomber::removeByPhysicsBody(PhysicsBody* body)
+{
+	for (Bomber* bomber : bombers)
+	{
+		if (bomber->sprite->getPhysicsBody() == body)
+		{
+			delete bomber;
 			break;
 		}
 	}

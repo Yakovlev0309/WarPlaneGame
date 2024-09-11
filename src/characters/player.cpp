@@ -18,8 +18,8 @@ Player::Player(Scene* gameScene, const Point& position) : scene(gameScene)
 	planeBody->setRotationEnable(false);
 
 	planeBody->setCategoryBitmask(PLAYER_COLLISION_BITMASK);
-	planeBody->setCollisionBitmask(COLLISION_WITH_ENEMY_BITMASK | COLLISION_WITH_BIRD_BITMASK);
-	planeBody->setContactTestBitmask(COLLISION_WITH_ENEMY_BITMASK | COLLISION_WITH_BIRD_BITMASK);
+	planeBody->setCollisionBitmask(COLLISION_WITH_BOMBER_BITMASK | COLLISION_WITH_FIGHTER_BITMASK | COLLISION_WITH_BIRD_BITMASK | FIGHTER_HIT_PLAYER_BITMASK);
+	planeBody->setContactTestBitmask(COLLISION_WITH_BOMBER_BITMASK | COLLISION_WITH_FIGHTER_BITMASK | COLLISION_WITH_BIRD_BITMASK | FIGHTER_HIT_PLAYER_BITMASK);
 
 	planeSprite->setPhysicsBody(planeBody);
 
@@ -46,8 +46,8 @@ void Player::shot(float dt)
 	body->setVelocity(Vec2(BULLET_SPEED, 0));
 
 	body->setCategoryBitmask(BULLET_COLLISION_BITMASK);
-	body->setCollisionBitmask(PLAYER_HIT_BITMASK);
-	body->setContactTestBitmask(PLAYER_HIT_BITMASK);
+	body->setCollisionBitmask(PLAYER_HIT_BOMBER_BITMASK | PLAYER_HIT_FIGHTER_BITMASK);
+	body->setContactTestBitmask(PLAYER_HIT_BOMBER_BITMASK | PLAYER_HIT_FIGHTER_BITMASK);
 
 	bulletSprite->setPhysicsBody(body);
 
