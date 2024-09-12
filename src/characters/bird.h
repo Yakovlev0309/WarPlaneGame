@@ -19,6 +19,9 @@ public:
 	void changeHeight(float lower, float higher);
 
 	static std::vector<Bird*> birds;
+
+private:
+	bool swing;
 };
 
 #endif // _BIRD_H_

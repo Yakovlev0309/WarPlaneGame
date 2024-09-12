@@ -27,6 +27,21 @@ Bird::Bird(float height, float speed)
 	}
 
 	birds.push_back(this);
+
+	swing = false;
+	std::function<void(float)> swingFunc = [&](float dt) {
+		if (swing)
+		{
+			sprite->setTexture("images/bird.png");
+		}
+		else
+		{
+			sprite->setTexture("images/bird_swing.png");
+		}
+		swing = !swing;
+		};
+
+	sprite->schedule(swingFunc, 0.2f, "swingFunc");
 }
 
 Bird::~Bird()
