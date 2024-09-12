@@ -35,6 +35,8 @@ private:
     void checkFightersForDodge(float dt);
     void addMeteorite();
 
+    bool isOnScreen(cocos2d::Node* node);
+
     cocos2d::Size visibleSize;
     cocos2d::Vec2 origin;
 

@@ -306,8 +306,11 @@ void Game::updateGameTime(float dt)
 	if (gameTime % ENEMY_SPAWN_INTERVAL_CHANGE_TIME == 0)
 	{
 		enemySpawnInterval /= ENEMY_SPAWN_DIVIDER;
-		unschedule(CC_SCHEDULE_SELECTOR(Game::spawnEnemy));
-		schedule(CC_SCHEDULE_SELECTOR(Game::spawnEnemy), enemySpawnInterval);
+		if (isScheduled(CC_SCHEDULE_SELECTOR(Game::spawnEnemy)))
+		{
+			unschedule(CC_SCHEDULE_SELECTOR(Game::spawnEnemy));
+			schedule(CC_SCHEDULE_SELECTOR(Game::spawnEnemy), enemySpawnInterval);
+		}
 	}
 }
 
@@ -371,9 +374,18 @@ void Game::randomFightersFire(float dt)
 
 void Game::removeOutOfScreenEnemies(float dt)
 {
-	Bomber::removeOutOfScreenSprites();
-	Fighter::removeOutOfScreenSprites();
-	Bird::removeOutOfScreenSprites();
+	//Bomber::removeOutOfScreenSprites();
+	//Fighter::removeOutOfScreenSprites();
+	//Bird::removeOutOfScreenSprites();
+
+	Vector<Node*> childs = getChildren();
+	for (int i = 0; i < getChildrenCount(); ++i)
+	{
+		if (!isOnScreen(childs.at(i)))
+		{
+			removeChild(childs.at(i), true);
+		}
+	}
 }
 
 void Game::checkFightersForDodge(float dt)
@@ -404,4 +416,16 @@ void Game::addMeteorite()
 	scheduleOnce(addMeteoriteFunc, 
 		METEORITE_LOWER_TIME_BOUND + rand() % (METEORITE_HIGHER_TIME_BOUND - METEORITE_LOWER_TIME_BOUND + 1),
 		"addMeteoriteFunc");
+}
+
+bool Game::isOnScreen(Node* node)
+{
+	if (node->getPosition().x <= visibleSize.width + node->getContentSize().width ||
+		node->getPosition().x >= -node->getContentSize().width ||
+		node->getPosition().y <= visibleSize.height + node->getContentSize().height ||
+		node->getPosition().y >= -node->getContentSize().height)
+	{
+		return true;
+	}
+	return false;
 }
