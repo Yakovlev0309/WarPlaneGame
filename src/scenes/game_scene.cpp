@@ -322,45 +322,7 @@ void Game::spawnEnemy(float dt)
 
 void Game::changeRandomBirdHeight(float dt)
 {
-	if (Bird::birds.size() > 0)
-	{
-		if (rand() % 2 == 0) // 50% chance to change the height
-		{
-			float lower = visibleSize.height * GROUND_HEIGHT_FACTOR;
-			float higher = visibleSize.height / 3;
-
-			currentBirdIndex = rand() % Bird::birds.size();
-			Bird* bird = Bird::birds.at(currentBirdIndex);
-
-			if (rand() % 2 == 0)
-			{
-				if (bird->getPositionY() - BIRD_HEIGHT_SPEED * BIRD_HEIGHT_TIME > lower)
-				{
-					//bird->getPhysicsBody()->setVelocity(Vec2(bird->getPhysicsBody()->getVelocity().x, -BIRD_HEIGHT_SPEED));
-					bird->setYVelocity(-BIRD_HEIGHT_SPEED);
-					scheduleOnce(CC_SCHEDULE_SELECTOR(Game::resetCurrentBirdVelocity), BIRD_HEIGHT_TIME);
-				}
-			}
-			else
-			{
-				if (bird->getPositionY() + BIRD_HEIGHT_SPEED * BIRD_HEIGHT_TIME < higher)
-				{
-					//bird->getPhysicsBody()->setVelocity(Vec2(bird->getPhysicsBody()->getVelocity().x, BIRD_HEIGHT_SPEED));
-					bird->setYVelocity(BIRD_HEIGHT_SPEED);
-					scheduleOnce(CC_SCHEDULE_SELECTOR(Game::resetCurrentBirdVelocity), BIRD_HEIGHT_TIME);
-				}
-			}
-		}
-	}
-}
-
-void Game::resetCurrentBirdVelocity(float dt)
-{
-	if (currentBirdIndex < Bird::birds.size())
-	{
-		Bird::birds.at(currentBirdIndex)->setYVelocity(0);
-	}
-	currentBirdIndex = -1;
+	Bird::changeRandomBirdHeight(visibleSize.height * GROUND_HEIGHT_FACTOR, visibleSize.height / 3);
 }
 
 void Game::randomFightersFire(float dt)
@@ -383,5 +345,5 @@ void Game::removeOutOfScreenEnemies(float dt)
 
 void Game::checkFightersForDodge(float dt)
 {
-	Fighter::checkFightersForDodge(player->getPosition());
+	Fighter::checkFightersForDodge(player->getPosition(), visibleSize.height / 3, visibleSize.height);
 }

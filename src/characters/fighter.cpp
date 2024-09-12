@@ -90,7 +90,7 @@ void Fighter::removeAll()
 	fighters.clear();
 }
 
-void Fighter::checkFightersForDodge(cocos2d::Vec2 playerPosition)
+void Fighter::checkFightersForDodge(cocos2d::Vec2 playerPosition, float lower, float higher)
 {
 	for (int i = 0; i < fighters.size(); ++i)
 	{
@@ -98,15 +98,13 @@ void Fighter::checkFightersForDodge(cocos2d::Vec2 playerPosition)
 			fighters.at(i)->sprite->getPositionY() >= playerPosition.y - fighters.at(i)->sprite->getContentSize().height &&
 			fighters.at(i)->sprite->getPositionY() <= playerPosition.y + fighters.at(i)->sprite->getContentSize().height)
 		{
-			fighters.at(i)->dodge();
+			fighters.at(i)->dodge(lower, higher);
 		}
 	}
 }
 
-void Fighter::dodge()
+void Fighter::dodge(float lower, float higher)
 {
-	float lower = visibleSize.height / 3;
-	float higher = visibleSize.height;
 	float speed = 0;
 	if (sprite->getPositionY() - FIGHTER_DODGING_SPEED * FIGHTER_DODGING_TIME > lower)
 	{

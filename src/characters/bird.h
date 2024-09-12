@@ -14,8 +14,9 @@ public:
 	static void removeByPhysicsBody(cocos2d::PhysicsBody* body);
 	static void removeAll();
 
-	void setYVelocity(float yVelocity);
-	float getPositionY();
+	static void changeRandomBirdHeight(float lower, float higher);
+
+	void changeHeight(float lower, float higher);
 
 	static std::vector<Bird*> birds;
 

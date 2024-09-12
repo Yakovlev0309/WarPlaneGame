@@ -76,13 +76,44 @@ void Bird::removeAll()
 	birds.clear();
 }
 
-void Bird::setYVelocity(float yVelocity)
+void Bird::changeRandomBirdHeight(float lower, float higher)
 {
-	sprite->getPhysicsBody()->setVelocity(Vec2(sprite->getPhysicsBody()->getVelocity().x, yVelocity));
-	// TODO поместить всю логику сюда, убрав из Game
+	if (birds.size() > 0)
+	{
+		birds.at(rand() % birds.size())->changeHeight(lower, higher);
+	}
 }
 
-float Bird::getPositionY()
+void Bird::changeHeight(float lower, float higher)
 {
-	return sprite->getPositionY();
+	if (rand() % int(1 / CHANCE_TO_CHANGE_BIRD_HEIGHT) == 0)
+	{
+		float speed = 0;
+		if (sprite->getPositionY() - BIRD_HEIGHT_SPEED * BIRD_HEIGHT_TIME > lower)
+		{
+			if (sprite->getPositionY() + BIRD_HEIGHT_SPEED * BIRD_HEIGHT_TIME < higher)
+			{
+				speed = rand() % 2 == 0 ? -BIRD_HEIGHT_SPEED : BIRD_HEIGHT_SPEED;
+			}
+			else
+			{
+				speed = -BIRD_HEIGHT_SPEED;
+			}
+		}
+		else
+		{
+			if (sprite->getPositionY() + BIRD_HEIGHT_SPEED * BIRD_HEIGHT_TIME < higher)
+			{
+				speed = BIRD_HEIGHT_SPEED;
+			}
+		}
+
+		sprite->getPhysicsBody()->setVelocity(Vec2(sprite->getPhysicsBody()->getVelocity().x, speed));
+
+		std::function<void(float)> stopChangingHeight = [&](float dt) {
+			sprite->getPhysicsBody()->setVelocity(Vec2(sprite->getPhysicsBody()->getVelocity().x, 0));
+			};
+
+		sprite->scheduleOnce(stopChangingHeight, BIRD_HEIGHT_TIME, "stopChangingHeightFunction");
+	}
 }
