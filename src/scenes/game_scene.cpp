@@ -4,6 +4,7 @@
 #include "../characters/bomber.h"
 #include "../characters/fighter.h"
 #include "../characters/bird.h"
+#include "../characters/meteorite.h"
 
 USING_NS_CC;
 
@@ -50,9 +51,9 @@ bool Game::init()
 	mouseListener->onMouseUp = CC_CALLBACK_1(Game::onMouseUp, this);
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(mouseListener, this);
 
-	Bomber::init(this);
-	Fighter::init(this);
-	Bird::init(this);
+	Enemy::init(this);
+
+	addMeteorite();
 
 	currentBirdIndex = -1;
 	currentFighterIndex = -1;
@@ -60,14 +61,14 @@ bool Game::init()
 	gameTime = 0;
 	gameTimeLabel = Label::createWithTTF("seconds: 0", "fonts/Marker Felt.ttf", visibleSize.height * GAME_TIME_FONT_SIZE_FACTOR);
 	gameTimeLabel->setColor(Color3B::ORANGE);
-	gameTimeLabel->setPosition(Point(SCORE_N_TIME_PADDING_FACTOR * visibleSize.width + gameTimeLabel->getContentSize().width / 2,
+	gameTimeLabel->setPosition(Point(SCORE_N_TIME_MARGIN_FACTOR * visibleSize.width + gameTimeLabel->getContentSize().width / 2,
 		visibleSize.height - gameTimeLabel->getContentSize().height));
 	addChild(gameTimeLabel, 200);
 
 	score = 0;
 	scoreLabel = Label::createWithTTF("score: 0", "fonts/Marker Felt.ttf", visibleSize.height * SCORE_FONT_SIZE_FACTOR);
 	scoreLabel->setColor(Color3B::WHITE);
-	scoreLabel->setPosition(Point(SCORE_N_TIME_PADDING_FACTOR * visibleSize.width + scoreLabel->getContentSize().width / 2,
+	scoreLabel->setPosition(Point(SCORE_N_TIME_MARGIN_FACTOR * visibleSize.width + scoreLabel->getContentSize().width / 2,
 		visibleSize.height - scoreLabel->getContentSize().height - gameTimeLabel->getContentSize().height));
 	addChild(scoreLabel, 200);
 
@@ -107,9 +108,12 @@ void Game::gameOver()
 
 bool Game::onContactBegin(const cocos2d::PhysicsContact& contact)
 {
-	PhysicsBody* a = contact.getShapeA()->getBody();
-	PhysicsBody* b = contact.getShapeB()->getBody();
+	collisionHandler(contact.getShapeA()->getBody(), contact.getShapeB()->getBody());
+	return true;
+}
 
+void Game::collisionHandler(PhysicsBody* a, PhysicsBody* b)
+{
 	switch (a->getCategoryBitmask() | b->getCategoryBitmask())
 	{
 	case COLLISION_WITH_BOMBER_BITMASK:
@@ -149,7 +153,7 @@ bool Game::onContactBegin(const cocos2d::PhysicsContact& contact)
 		gameOver();
 		break;
 	case PLAYER_HIT_BOMBER_BITMASK:
-		// remove bullet and target
+		// remove bullet and bomber
 		if (a->getCategoryBitmask() == BULLET_COLLISION_BITMASK)
 		{
 			Bomber::removeByPhysicsBody(b);
@@ -164,7 +168,7 @@ bool Game::onContactBegin(const cocos2d::PhysicsContact& contact)
 		scoreLabel->setString("score: " + std::to_string(score));
 		break;
 	case PLAYER_HIT_FIGHTER_BITMASK:
-		// remove bullet and target
+		// remove bullet and fighter
 		if (a->getCategoryBitmask() == BULLET_COLLISION_BITMASK)
 		{
 			Fighter::removeByPhysicsBody(b);
@@ -179,7 +183,7 @@ bool Game::onContactBegin(const cocos2d::PhysicsContact& contact)
 		scoreLabel->setString("score: " + std::to_string(score));
 		break;
 	case FIGHTER_HIT_PLAYER_BITMASK:
-		// remove bullet and target
+		// remove bullet
 		if (a->getCategoryBitmask() == FIGHTER_BULLET_COLLISION_BITMASK)
 		{
 			removeChild(a->getNode());
@@ -190,9 +194,32 @@ bool Game::onContactBegin(const cocos2d::PhysicsContact& contact)
 		}
 		gameOver();
 		break;
+	case METEORITE_COLLISION_WITH_PLAYER_BITMASK:
+		gameOver();
+		break;
+	case METEORITE_COLLISION_WITH_BOMBER_BITMASK:
+		// remove bomber
+		if (a->getCategoryBitmask() == METEORITE_COLLISION_BITMASK)
+		{
+			Bomber::removeByPhysicsBody(b);
+		}
+		else
+		{
+			Bomber::removeByPhysicsBody(a);
+		}
+		break;
+	case METEORITE_COLLISION_WITH_FIGHTER_BITMASK:
+		// remove fighter
+		if (a->getCategoryBitmask() == METEORITE_COLLISION_BITMASK)
+		{
+			Fighter::removeByPhysicsBody(b);
+		}
+		else
+		{
+			Fighter::removeByPhysicsBody(a);
+		}
+		break;
 	}
-
-	return true;
 }
 
 void Game::onMouseMove(EventMouse* event)
@@ -255,7 +282,7 @@ void Game::moveBackground(float dt)
 
 void Game::movePlayer(float dt)
 {
-	if (std::abs(targetPlayerPosition.x - player->getPosition().x) > 5 || // TODO исправить
+	if (std::abs(targetPlayerPosition.x - player->getPosition().x) > 5 || 
 		std::abs(targetPlayerPosition.y - player->getPosition().y) > 5)
 	{
 		Vec2 direction = targetPlayerPosition - player->getPosition();
@@ -290,11 +317,11 @@ void Game::spawnEnemy(float dt)
 		{
 		case 0:
 			height = visibleSize.height / 3 * CCRANDOM_0_1() + visibleSize.height / 3 * 2;
-			speed = HIGH_SPEED;
+			speed = HIGH_ENEMY_SPEED;
 			break;
 		default:
 			height = visibleSize.height / 3 * CCRANDOM_0_1() + visibleSize.height / 3;
-			speed = MEDIUM_SPEED;
+			speed = MEDIUM_ENEMY_SPEED;
 			break;
 		}
 		new Bomber(height, speed);
@@ -304,17 +331,17 @@ void Game::spawnEnemy(float dt)
 		switch (rand() % 2)
 		{
 		case 0:
-			speed = HIGH_SPEED;
+			speed = HIGH_ENEMY_SPEED;
 			break;
 		default:
-			speed = MEDIUM_SPEED;
+			speed = MEDIUM_ENEMY_SPEED;
 			break;
 		}
 		new Fighter(height, speed);
 		break;
 	default:
 		height = (visibleSize.height / 3 - visibleSize.height * GROUND_HEIGHT_FACTOR) * CCRANDOM_0_1() + visibleSize.height * GROUND_HEIGHT_FACTOR;
-		speed = LOW_SPEED;
+		speed = LOW_ENEMY_SPEED;
 		new Bird(height, speed);
 		break;
 	}
@@ -329,7 +356,7 @@ void Game::randomFightersFire(float dt)
 {
 	if (Fighter::fighters.size() > 0)
 	{
-		if (rand() % 2 == 0) // 50% chance to start a fire
+		if (rand() % int(1 / FIGHTER_CHANCE_TO_START_A_FIRE) == 0)
 		{
 			Fighter::fighters.at(rand() % Fighter::fighters.size())->fire();
 		}
@@ -346,4 +373,29 @@ void Game::removeOutOfScreenEnemies(float dt)
 void Game::checkFightersForDodge(float dt)
 {
 	Fighter::checkFightersForDodge(player->getPosition(), visibleSize.height / 3, visibleSize.height);
+}
+
+void Game::addMeteorite()
+{
+	std::function<void(float)> addMeteoriteFunc = [&](float dt) {
+		float xPosition;
+		switch (rand() % 3)
+		{
+		case 0:
+			xPosition = visibleSize.width / 4;
+			break;
+		case 1:
+			xPosition = visibleSize.width / 2;
+			break;
+		default:
+			xPosition = visibleSize.width / 4 * 3;
+			break;
+		}
+		new Meteorite(xPosition);
+		addMeteorite();
+		};
+
+	scheduleOnce(addMeteoriteFunc, 
+		METEORITE_LOWER_TIME_BOUND + rand() % (METEORITE_HIGHER_TIME_BOUND - METEORITE_LOWER_TIME_BOUND + 1),
+		"addMeteoriteFunc");
 }

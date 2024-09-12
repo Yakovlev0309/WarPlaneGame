@@ -17,8 +17,14 @@ Fighter::Fighter(float height, float speed)
 	body->setVelocity(Vec2(-speed, 0));
 
 	body->setCategoryBitmask(FIGHTER_COLLISION_BITMASK);
-	body->setCollisionBitmask(PLAYER_HIT_FIGHTER_BITMASK | COLLISION_WITH_FIGHTER_BITMASK);
-	body->setContactTestBitmask(PLAYER_HIT_FIGHTER_BITMASK | COLLISION_WITH_FIGHTER_BITMASK);
+	body->setCollisionBitmask(
+		PLAYER_HIT_FIGHTER_BITMASK | 
+		COLLISION_WITH_FIGHTER_BITMASK | 
+		METEORITE_COLLISION_WITH_FIGHTER_BITMASK);
+	body->setContactTestBitmask(
+		PLAYER_HIT_FIGHTER_BITMASK | 
+		COLLISION_WITH_FIGHTER_BITMASK | 
+		METEORITE_COLLISION_WITH_FIGHTER_BITMASK);
 
 	sprite->setPhysicsBody(body);
 
@@ -32,15 +38,12 @@ Fighter::Fighter(float height, float speed)
 
 Fighter::~Fighter()
 {
-	sprite->unscheduleUpdate();
-	sprite->unscheduleAllCallbacks();
 	//stopFire();
 	auto fighter = std::find(fighters.begin(), fighters.end(), this);
 	if (fighter != fighters.end())
 	{
 		fighters.erase(fighter);
 	}
-	scene->removeChild(sprite);
 }
 
 void Fighter::removeOutOfScreenSprites()
@@ -90,7 +93,7 @@ void Fighter::removeAll()
 	fighters.clear();
 }
 
-void Fighter::checkFightersForDodge(cocos2d::Vec2 playerPosition, float lower, float higher)
+void Fighter::checkFightersForDodge(const cocos2d::Vec2& playerPosition, float lower, float higher)
 {
 	for (int i = 0; i < fighters.size(); ++i)
 	{
@@ -106,22 +109,22 @@ void Fighter::checkFightersForDodge(cocos2d::Vec2 playerPosition, float lower, f
 void Fighter::dodge(float lower, float higher)
 {
 	float speed = 0;
-	if (sprite->getPositionY() - FIGHTER_DODGING_SPEED * FIGHTER_DODGING_TIME > lower)
+	if (sprite->getPositionY() - FIGHTER_DODGING_Y_SPEED * FIGHTER_DODGING_TIME > lower)
 	{
-		if (sprite->getPositionY() + FIGHTER_DODGING_SPEED * FIGHTER_DODGING_TIME < higher)
+		if (sprite->getPositionY() + FIGHTER_DODGING_Y_SPEED * FIGHTER_DODGING_TIME < higher)
 		{
-			speed = rand() % 2 == 0 ? -FIGHTER_DODGING_SPEED : FIGHTER_DODGING_SPEED;
+			speed = rand() % 2 == 0 ? -FIGHTER_DODGING_Y_SPEED : FIGHTER_DODGING_Y_SPEED;
 		}
 		else
 		{
-			speed = -FIGHTER_DODGING_SPEED;
+			speed = -FIGHTER_DODGING_Y_SPEED;
 		}
 	}
 	else
 	{
-		if (sprite->getPositionY() + FIGHTER_DODGING_SPEED * FIGHTER_DODGING_TIME < higher)
+		if (sprite->getPositionY() + FIGHTER_DODGING_Y_SPEED * FIGHTER_DODGING_TIME < higher)
 		{
-			speed = FIGHTER_DODGING_SPEED;
+			speed = FIGHTER_DODGING_Y_SPEED;
 		}
 	}
 

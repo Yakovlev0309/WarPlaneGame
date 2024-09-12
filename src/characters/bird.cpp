@@ -36,7 +36,6 @@ Bird::~Bird()
 	{
 		birds.erase(b);
 	}
-	scene->removeChild(sprite, true);
 }
 
 void Bird::removeOutOfScreenSprites()
@@ -86,25 +85,25 @@ void Bird::changeRandomBirdHeight(float lower, float higher)
 
 void Bird::changeHeight(float lower, float higher)
 {
-	if (rand() % int(1 / CHANCE_TO_CHANGE_BIRD_HEIGHT) == 0)
+	if (rand() % int(1 / BIRD_CHANCE_TO_CHANGE_HEIGHT) == 0)
 	{
 		float speed = 0;
-		if (sprite->getPositionY() - BIRD_HEIGHT_SPEED * BIRD_HEIGHT_TIME > lower)
+		if (sprite->getPositionY() - BIRD_Y_SPEED * BIRD_HEIGHT_CHANGING_TIME > lower)
 		{
-			if (sprite->getPositionY() + BIRD_HEIGHT_SPEED * BIRD_HEIGHT_TIME < higher)
+			if (sprite->getPositionY() + BIRD_Y_SPEED * BIRD_HEIGHT_CHANGING_TIME < higher)
 			{
-				speed = rand() % 2 == 0 ? -BIRD_HEIGHT_SPEED : BIRD_HEIGHT_SPEED;
+				speed = rand() % 2 == 0 ? -BIRD_Y_SPEED : BIRD_Y_SPEED;
 			}
 			else
 			{
-				speed = -BIRD_HEIGHT_SPEED;
+				speed = -BIRD_Y_SPEED;
 			}
 		}
 		else
 		{
-			if (sprite->getPositionY() + BIRD_HEIGHT_SPEED * BIRD_HEIGHT_TIME < higher)
+			if (sprite->getPositionY() + BIRD_Y_SPEED * BIRD_HEIGHT_CHANGING_TIME < higher)
 			{
-				speed = BIRD_HEIGHT_SPEED;
+				speed = BIRD_Y_SPEED;
 			}
 		}
 
@@ -114,6 +113,6 @@ void Bird::changeHeight(float lower, float higher)
 			sprite->getPhysicsBody()->setVelocity(Vec2(sprite->getPhysicsBody()->getVelocity().x, 0));
 			};
 
-		sprite->scheduleOnce(stopChangingHeight, BIRD_HEIGHT_TIME, "stopChangingHeightFunction");
+		sprite->scheduleOnce(stopChangingHeight, BIRD_HEIGHT_CHANGING_TIME, "stopChangingHeightFunction");
 	}
 }

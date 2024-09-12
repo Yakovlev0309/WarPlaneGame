@@ -6,6 +6,9 @@
 class Enemy
 {
 public:
+	Enemy();
+	virtual ~Enemy();
+
 	static void init(cocos2d::Scene* gameScene);
 
 protected:

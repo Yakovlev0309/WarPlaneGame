@@ -15,7 +15,7 @@ public:
 	static void removeByPhysicsBody(cocos2d::PhysicsBody* body);
 	static void removeAll();
 
-	static void checkFightersForDodge(cocos2d::Vec2 playerPosition, float lower, float higher);
+	static void checkFightersForDodge(const cocos2d::Vec2& playerPosition, float lower, float higher);
 
 	void dodge(float lower, float higher);
 	void fire();

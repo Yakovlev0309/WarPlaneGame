@@ -18,6 +18,7 @@ private:
 
     void gameOver();
     bool onContactBegin(const cocos2d::PhysicsContact& contact);
+    void collisionHandler(cocos2d::PhysicsBody* a, cocos2d::PhysicsBody* b);
     void onMouseMove(cocos2d::EventMouse* event);
     void onMouseDown(cocos2d::EventMouse* event);
     void onMouseUp(cocos2d::EventMouse* event);
@@ -32,6 +33,7 @@ private:
     void randomFightersFire(float dt);
     void removeOutOfScreenEnemies(float dt);
     void checkFightersForDodge(float dt);
+    void addMeteorite();
 
     cocos2d::Size visibleSize;
     cocos2d::Vec2 origin;
