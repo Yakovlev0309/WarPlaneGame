@@ -15,9 +15,6 @@ public:
 	static void removeAll();
 
 	static std::vector<Bomber*> bombers;
-
-private:
-	cocos2d::Sprite* sprite;
 };
 
 #endif // _BOMBER_H_

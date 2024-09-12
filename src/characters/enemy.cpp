@@ -12,11 +12,9 @@ void Enemy::init(Scene* gameScene)
 	scene = gameScene;
 	visibleSize = Director::getInstance()->getVisibleSize();
 	origin = Director::getInstance()->getVisibleOrigin();
-
-	//scheduler = Director::getInstance()->getScheduler();
 }
 
-bool Enemy::isOnScreen(Sprite* sprite)
+bool Enemy::isOnScreen()
 {
 	if (sprite->getPosition().x <= visibleSize.width + sprite->getContentSize().width &&
 		sprite->getPosition().x >= -sprite->getContentSize().width)
@@ -27,7 +25,7 @@ bool Enemy::isOnScreen(Sprite* sprite)
 	return false;
 }
 
-bool Enemy::isOnRightSideOfScreen(Sprite* sprite)
+bool Enemy::isOnRightSideOfScreen()
 {
 	if (sprite->getPosition().x <= visibleSize.width + sprite->getContentSize().width &&
 		sprite->getPosition().x >= visibleSize.width / 2 + sprite->getContentSize().width)

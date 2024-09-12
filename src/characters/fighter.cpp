@@ -48,7 +48,7 @@ void Fighter::removeOutOfScreenSprites()
 	// TODO удалять все спрайты за экраном, а не только первый попавшийся
 	for (Fighter* fighter : fighters)
 	{
-		if (!isOnScreen(fighter->sprite))
+		if (!fighter->isOnScreen())
 		{
 			delete fighter;
 			break;

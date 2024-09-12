@@ -19,9 +19,6 @@ public:
 	void changeHeight(float lower, float higher);
 
 	static std::vector<Bird*> birds;
-
-private:
-	cocos2d::Sprite* sprite;
 };
 
 #endif // _BIRD_H_

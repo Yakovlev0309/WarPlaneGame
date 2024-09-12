@@ -9,14 +9,14 @@ public:
 	static void init(cocos2d::Scene* gameScene);
 
 protected:
-	static bool isOnScreen(cocos2d::Sprite* sprite);
-	static bool isOnRightSideOfScreen(cocos2d::Sprite* sprite);
+	bool isOnScreen();
+	bool isOnRightSideOfScreen();
 
 	static cocos2d::Scene* scene;
 	static cocos2d::Size visibleSize;
 	static cocos2d::Vec2 origin;
 
-	//static cocos2d::Scheduler* scheduler;
+	cocos2d::Sprite* sprite;
 };
 
 #endif // _ENEMY_H_

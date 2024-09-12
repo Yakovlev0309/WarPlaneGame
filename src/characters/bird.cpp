@@ -43,7 +43,7 @@ void Bird::removeOutOfScreenSprites()
 {
 	for (Bird* bird : birds)
 	{
-		if (!isOnScreen(bird->sprite))
+		if (!bird->isOnScreen())
 		{
 			delete bird;
 			break;

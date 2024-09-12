@@ -43,7 +43,7 @@ void Bomber::removeOutOfScreenSprites()
 {
 	for (Bomber* bomber : bombers)
 	{
-		if (!isOnScreen(bomber->sprite))
+		if (!bomber->isOnScreen())
 		{
 			delete bomber;
 			break;

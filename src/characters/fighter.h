@@ -26,8 +26,6 @@ public:
 private:
 	void shot();
 	void stopFire();
-
-	cocos2d::Sprite* sprite;
 };
 
 #endif // _FIGHTER_H_
