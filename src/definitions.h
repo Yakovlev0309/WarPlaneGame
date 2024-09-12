@@ -20,6 +20,11 @@
 // out of screen objects
 #define OUT_OF_SCREEN_REMOVING_INTERVAL 3.0
 
+// enemy spawn
+#define BEGIN_ENEMY_SPAWN_INTERVAL 1.0
+#define ENEMY_SPAWN_DIVIDER 1.1
+#define ENEMY_SPAWN_INTERVAL_CHANGE_TIME 30
+
 // categories bitmasks
 #define PLAYER_COLLISION_BITMASK                 0x0000001
 #define BOMBER_COLLISION_BITMASK                 0x0000010

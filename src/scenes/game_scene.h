@@ -49,14 +49,13 @@ private:
     cocos2d::EventListenerPhysicsContact* contactListener;
     cocos2d::EventListenerMouse* mouseListener;
 
-    int currentBirdIndex;
-    int currentFighterIndex;
+    cocos2d::Label* gameTimeLabel;
+    cocos2d::Label* scoreLabel;
 
     unsigned int gameTime;
     unsigned int score;
 
-    cocos2d::Label* gameTimeLabel;
-    cocos2d::Label* scoreLabel;
+    float enemySpawnInterval;
 };
 
 #endif // _GAME_SCENE_H_

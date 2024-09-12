@@ -55,9 +55,6 @@ bool Game::init()
 
 	addMeteorite();
 
-	currentBirdIndex = -1;
-	currentFighterIndex = -1;
-
 	gameTime = 0;
 	gameTimeLabel = Label::createWithTTF("seconds: 0", "fonts/Marker Felt.ttf", visibleSize.height * GAME_TIME_FONT_SIZE_FACTOR);
 	gameTimeLabel->setColor(Color3B::ORANGE);
@@ -72,8 +69,10 @@ bool Game::init()
 		visibleSize.height - scoreLabel->getContentSize().height - gameTimeLabel->getContentSize().height));
 	addChild(scoreLabel, 200);
 
+	enemySpawnInterval = BEGIN_ENEMY_SPAWN_INTERVAL;
+
 	schedule(CC_SCHEDULE_SELECTOR(Game::updateGameTime), 1.0f);
-	schedule(CC_SCHEDULE_SELECTOR(Game::spawnEnemy), 1.0f);
+	schedule(CC_SCHEDULE_SELECTOR(Game::spawnEnemy), enemySpawnInterval);
 	schedule(CC_SCHEDULE_SELECTOR(Game::changeRandomBirdHeight), BIRD_HEIGHT_CHANGING_INTERVAL);
 	schedule(CC_SCHEDULE_SELECTOR(Game::randomFightersFire), FIGHTER_FIRE_INTERVAL);
 	schedule(CC_SCHEDULE_SELECTOR(Game::removeOutOfScreenEnemies), OUT_OF_SCREEN_REMOVING_INTERVAL);
@@ -258,7 +257,7 @@ void Game::update(float dt)
 void Game::moveBackground(float dt)
 {
 	static unsigned int acceleration = 1;
-	if (gameTime >= 30)
+	if (gameTime >= 60)
 	{
 		acceleration = 2;
 	}
@@ -303,6 +302,13 @@ void Game::updateGameTime(float dt)
 {
 	gameTime += dt;
 	gameTimeLabel->setString("seconds: " + std::to_string(gameTime));
+
+	if (gameTime % ENEMY_SPAWN_INTERVAL_CHANGE_TIME == 0)
+	{
+		enemySpawnInterval /= ENEMY_SPAWN_DIVIDER;
+		unschedule(CC_SCHEDULE_SELECTOR(Game::spawnEnemy));
+		schedule(CC_SCHEDULE_SELECTOR(Game::spawnEnemy), enemySpawnInterval);
+	}
 }
 
 void Game::spawnEnemy(float dt)
