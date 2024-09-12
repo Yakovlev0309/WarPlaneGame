@@ -213,11 +213,13 @@ void Game::onMouseMove(EventMouse* event)
 void Game::onMouseDown(EventMouse* event)
 {
 	player->fire();
+	schedule(CC_SCHEDULE_SELECTOR(Game::checkFightersForDodge), CHECK_FIGHTERS_DODGE_INTERVAL);
 }
 
 void Game::onMouseUp(EventMouse* event)
 {
 	player->stopFire();
+	unschedule(CC_SCHEDULE_SELECTOR(Game::checkFightersForDodge));
 }
 
 void Game::update(float dt)
@@ -377,4 +379,9 @@ void Game::removeOutOfScreenEnemies(float dt)
 	Bomber::removeOutOfScreenSprites();
 	Fighter::removeOutOfScreenSprites();
 	Bird::removeOutOfScreenSprites();
+}
+
+void Game::checkFightersForDodge(float dt)
+{
+	Fighter::checkFightersForDodge(player->getPosition());
 }

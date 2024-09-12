@@ -65,9 +65,13 @@ void Bird::removeByPhysicsBody(PhysicsBody* body)
 
 void Bird::removeAll()
 {
-	for (Bird* bird : birds)
+	for (int i = 0; i < birds.size(); ++i)
 	{
-		delete bird;
+		try
+		{
+			delete birds.at(i);
+		}
+		catch(...) {}
 	}
 	birds.clear();
 }
@@ -75,6 +79,7 @@ void Bird::removeAll()
 void Bird::setYVelocity(float yVelocity)
 {
 	sprite->getPhysicsBody()->setVelocity(Vec2(sprite->getPhysicsBody()->getVelocity().x, yVelocity));
+	// TODO поместить всю логику сюда, убрав из Game
 }
 
 float Bird::getPositionY()

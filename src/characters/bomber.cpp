@@ -65,9 +65,13 @@ void Bomber::removeByPhysicsBody(PhysicsBody* body)
 
 void Bomber::removeAll()
 {
-	for (Bomber* bomber : bombers)
+	for (int i = 0; i < bombers.size(); ++i)
 	{
-		delete bomber;
+		try
+		{
+			delete bombers.at(i);
+		}
+		catch (...) {}
 	}
 	bombers.clear();
 }

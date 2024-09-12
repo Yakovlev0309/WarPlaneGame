@@ -32,6 +32,7 @@ private:
     void resetCurrentBirdVelocity(float dt);
     void randomFightersFire(float dt);
     void removeOutOfScreenEnemies(float dt);
+    void checkFightersForDodge(float dt);
 
     cocos2d::Size visibleSize;
     cocos2d::Vec2 origin;

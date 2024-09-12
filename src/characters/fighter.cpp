@@ -32,13 +32,15 @@ Fighter::Fighter(float height, float speed)
 
 Fighter::~Fighter()
 {
-	stopFire();
+	sprite->unscheduleUpdate();
+	sprite->unscheduleAllCallbacks();
+	//stopFire();
 	auto fighter = std::find(fighters.begin(), fighters.end(), this);
 	if (fighter != fighters.end())
 	{
 		fighters.erase(fighter);
 	}
-	scene->removeChild(sprite, true);
+	scene->removeChild(sprite);
 }
 
 void Fighter::removeOutOfScreenSprites()
@@ -77,11 +79,61 @@ void Fighter::removeByPhysicsBody(PhysicsBody* body)
 
 void Fighter::removeAll()
 {
-	for (Fighter* fighter : fighters)
+	for (int i = 0; i < fighters.size(); ++i)
 	{
-		delete fighter;
+		try
+		{
+			delete fighters.at(i);
+		}
+		catch (...) {}
 	}
 	fighters.clear();
+}
+
+void Fighter::checkFightersForDodge(cocos2d::Vec2 playerPosition)
+{
+	for (int i = 0; i < fighters.size(); ++i)
+	{
+		if (fighters.at(i)->sprite->getPositionX() > playerPosition.x &&
+			fighters.at(i)->sprite->getPositionY() >= playerPosition.y - fighters.at(i)->sprite->getContentSize().height &&
+			fighters.at(i)->sprite->getPositionY() <= playerPosition.y + fighters.at(i)->sprite->getContentSize().height)
+		{
+			fighters.at(i)->dodge();
+		}
+	}
+}
+
+void Fighter::dodge()
+{
+	float lower = visibleSize.height / 3;
+	float higher = visibleSize.height;
+	float speed = 0;
+	if (sprite->getPositionY() - FIGHTER_DODGING_SPEED * FIGHTER_DODGING_TIME > lower)
+	{
+		if (sprite->getPositionY() + FIGHTER_DODGING_SPEED * FIGHTER_DODGING_TIME < higher)
+		{
+			speed = rand() % 2 == 0 ? -FIGHTER_DODGING_SPEED : FIGHTER_DODGING_SPEED;
+		}
+		else
+		{
+			speed = -FIGHTER_DODGING_SPEED;
+		}
+	}
+	else
+	{
+		if (sprite->getPositionY() + FIGHTER_DODGING_SPEED * FIGHTER_DODGING_TIME < higher)
+		{
+			speed = FIGHTER_DODGING_SPEED;
+		}
+	}
+
+	sprite->getPhysicsBody()->setVelocity(Vec2(sprite->getPhysicsBody()->getVelocity().x, speed));
+
+	std::function<void(float)> stopDodging = [&](float dt) {
+		sprite->getPhysicsBody()->setVelocity(Vec2(sprite->getPhysicsBody()->getVelocity().x, 0));
+		};
+
+	sprite->scheduleOnce(stopDodging, FIGHTER_DODGING_TIME, "stopDodgingFunction");
 }
 
 void Fighter::fire()
@@ -97,8 +149,8 @@ void Fighter::fire()
 			stopFire();
 			};
 
-		scene->schedule(shotLambda, PLAYER_GUN_RATE, "fireFunction");
-		scene->scheduleOnce(stopFireLambda, FIGHTER_FIRE_TIME, "stopFireFunction");
+		sprite->schedule(shotLambda, PLAYER_GUN_RATE, "fireFunction");
+		sprite->scheduleOnce(stopFireLambda, FIGHTER_FIRE_TIME, "stopFireFunction");
 	}
 }
 
@@ -122,7 +174,7 @@ void Fighter::shot()
 
 void Fighter::stopFire()
 {
-	scene->unschedule("fireFunction");
+	sprite->unschedule("fireFunction");
 	auto fighter = std::find(firingFighters.begin(), firingFighters.end(), this);
 	if (fighter != firingFighters.end())
 	{
