@@ -11,7 +11,17 @@ Fighter::Fighter(float height, float speed)
 	sprite = Sprite::create("images/fighter.png");
 	sprite->setPosition(Point(visibleSize.width + sprite->getContentSize().width / 2, height));
 
-	PhysicsBody* body = PhysicsBody::createBox(sprite->getContentSize());
+	float dx = 50;
+	float dy = 31;
+	Vec2* points = new Vec2[6]{
+		Vec2(100 - dx, 0 - dy),
+		Vec2(100 - dx, 62 - dy),
+		Vec2(60 - dx, 50 - dy),
+		Vec2(0 - dx, 50 - dy),
+		Vec2(0 - dx, 30 - dy),
+		Vec2(60 - dx, 30 - dy)
+	};
+	PhysicsBody* body = PhysicsBody::createPolygon(points, 6);
 	body->setGravityEnable(false);
 	body->setRotationEnable(false);
 	body->setVelocity(Vec2(-speed, 0));

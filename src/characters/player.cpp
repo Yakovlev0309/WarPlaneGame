@@ -13,7 +13,17 @@ Player::Player(Scene* gameScene, const Point& position) : scene(gameScene)
 	planeSprite = Sprite::create("images/player.png");
 	planeSprite->setPosition(position);
 
-	PhysicsBody* planeBody = PhysicsBody::createBox(planeSprite->getContentSize());
+	float dx = 50;
+	float dy = 31;
+	Vec2* points = new Vec2[6] {
+		Vec2(0 - dx, 0 - dy),
+		Vec2(0 - dx, 62 - dy),
+		Vec2(40 - dx, 50 - dy),
+		Vec2(100 - dx, 50 - dy),
+		Vec2(100 - dx, 30 - dy),
+		Vec2(40 - dx, 30 - dy)
+	};
+	PhysicsBody* planeBody = PhysicsBody::createPolygon(points, 6);
 	planeBody->setGravityEnable(false);
 	planeBody->setRotationEnable(false);
 

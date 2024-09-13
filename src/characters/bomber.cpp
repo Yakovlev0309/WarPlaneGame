@@ -10,7 +10,17 @@ Bomber::Bomber(float height, float speed)
 	sprite = Sprite::create("images/bomber.png");
 	sprite->setPosition(Point(visibleSize.width + sprite->getContentSize().width / 2, height));
 
-	PhysicsBody* body = PhysicsBody::createBox(sprite->getContentSize());
+	float dx = 105;
+	float dy = 44;
+	Vec2* points = new Vec2[6]{
+		Vec2(210 - dx, 0 - dy),
+		Vec2(210 - dx, 88 - dy),
+		Vec2(185 - dx, 60 - dy),
+		Vec2(0 - dx, 60 - dy),
+		Vec2(0 - dx, 10 - dy),
+		Vec2(185 - dx, 10 - dy)
+	};
+	PhysicsBody* body = PhysicsBody::createPolygon(points, 6);
 	body->setGravityEnable(false);
 	body->setRotationEnable(false);
 	body->setVelocity(Vec2(-speed, 0));
