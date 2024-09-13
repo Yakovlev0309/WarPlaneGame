@@ -15,8 +15,8 @@ Bomber::Bomber(float height, float speed)
 	Vec2* points = new Vec2[6]{
 		Vec2(210 - dx, 0 - dy),
 		Vec2(210 - dx, 88 - dy),
-		Vec2(185 - dx, 60 - dy),
-		Vec2(0 - dx, 60 - dy),
+		Vec2(185 - dx, 50 - dy),
+		Vec2(0 - dx, 50 - dy),
 		Vec2(0 - dx, 10 - dy),
 		Vec2(185 - dx, 10 - dy)
 	};
