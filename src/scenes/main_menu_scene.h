@@ -14,6 +14,8 @@ public:
 
 private:
     void startGame(Ref* sender);
+    void results(Ref* sender);
+    void exit(Ref* sender);
 };
 
 #endif // _MAIN_MENU_SCENE_H_
