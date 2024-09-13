@@ -1,5 +1,6 @@
 #include "main_menu_scene.h"
 #include "game_scene.h"
+#include "results_scene.h"
 #include "../definitions.h"
 
 USING_NS_CC;
@@ -27,10 +28,10 @@ bool MainMenu::init()
     resultsButton->setPosition(Point(visibleSize.width / 2, visibleSize.height / 2));
 
     MenuItemImage* playButton = MenuItemImage::create("images/play_button.png", "images/play_button_clicked.png", CC_CALLBACK_1(MainMenu::startGame, this));
-    playButton->setPosition(Point(visibleSize.width / 2, resultsButton->getPosition().y + resultsButton->getContentSize().height + playButton->getContentSize().height));
+    playButton->setPosition(Point(visibleSize.width / 2, resultsButton->getPositionY() + resultsButton->getContentSize().height + playButton->getContentSize().height));
 
     MenuItemImage* exitButton = MenuItemImage::create("images/exit_button.png", "images/exit_button_clicked.png", CC_CALLBACK_1(MainMenu::exit, this));
-    exitButton->setPosition(Point(visibleSize.width / 2, resultsButton->getPosition().y - resultsButton->getContentSize().height - exitButton->getContentSize().height));
+    exitButton->setPosition(Point(visibleSize.width / 2, resultsButton->getPositionY() - resultsButton->getContentSize().height - exitButton->getContentSize().height));
 
     Menu* menu = Menu::create(playButton, resultsButton, exitButton, NULL);
     menu->setPosition(Point::ZERO);
@@ -47,8 +48,8 @@ void MainMenu::startGame(Ref* sender)
 
 void MainMenu::results(Ref* sender)
 {
-    // Scene* scene = Results::createScene();
-    // Director::getInstance()->replaceScene(TransitionFade::create(TRANSITION_TIME, scene));
+     Scene* scene = Results::createScene();
+     Director::getInstance()->replaceScene(TransitionFade::create(TRANSITION_TIME, scene));
 }
 
 void MainMenu::exit(Ref* sender)
