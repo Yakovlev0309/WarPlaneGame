@@ -99,7 +99,7 @@ void Game::gameOver()
 	unscheduleAllCallbacks();
 	unscheduleUpdate();
 
-	Scene* scene = GameOver::createScene(score);
+	Scene* scene = GameOver::createScene(score, gameTime);
 	Director::getInstance()->replaceScene(TransitionFade::create(TRANSITION_TIME, scene));
 
 	delete player;
