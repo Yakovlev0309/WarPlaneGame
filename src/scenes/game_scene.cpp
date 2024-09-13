@@ -11,7 +11,7 @@ USING_NS_CC;
 Scene* Game::createScene()
 {
 	Scene* scene = Game::createWithPhysics();
-	scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL); // red obstacles lines
+	//scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL); // red obstacles lines
 	//scene->getPhysicsWorld()->setGravity(Vec2(0, 0));
 
 	Game* layer = Game::create();
