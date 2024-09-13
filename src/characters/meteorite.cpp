@@ -10,7 +10,7 @@ Meteorite::Meteorite(float xPosition)
 
 	PhysicsBody* body = PhysicsBody::createCircle(sprite->getContentSize().width / 2);
 	body->setGravityEnable(false);
-	body->setRotationEnable(false);
+	body->setRotationEnable(true);
 
 	if (rand() % 2 == 0)
 	{
