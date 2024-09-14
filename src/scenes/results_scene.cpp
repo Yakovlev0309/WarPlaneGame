@@ -24,7 +24,7 @@ bool Results::init()
     addChild(background);
 
     MenuItemImage* menuButton = MenuItemImage::create("images/menu_button.png", "images/menu_button_clicked.png", CC_CALLBACK_1(Results::openMainMenu, this));
-    menuButton->setPosition(Point(visibleSize.width / 10, visibleSize.height - menuButton->getContentSize().height * 2));
+    menuButton->setPosition(Point(visibleSize.width / 10, visibleSize.height - menuButton->getContentSize().height));
 
     Menu* menu = Menu::create(menuButton, NULL);
     menu->setPosition(Point::ZERO);

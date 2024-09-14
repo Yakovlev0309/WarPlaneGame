@@ -29,11 +29,11 @@ bool GameOver::init()
     background->setPosition(Point(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
     addChild(background);
 
-    MenuItemImage* menuButton = MenuItemImage::create("images/menu_button.png", "images/menu_button_clicked.png", CC_CALLBACK_1(GameOver::openMenu, this));
-    menuButton->setPosition(Point(visibleSize.width / 2 + origin.x, visibleSize.height / 3 + origin.y));
-
     MenuItemImage* retryButton = MenuItemImage::create("images/retry_button.png", "images/retry_button_clicked.png", CC_CALLBACK_1(GameOver::retry, this));
-    retryButton->setPosition(Point(visibleSize.width / 2 + origin.x, menuButton->getPosition().y - menuButton->getContentSize().height * 2));
+    retryButton->setPosition(Point(visibleSize.width / 2 + origin.x, visibleSize.height / 3 + origin.y));
+    
+    MenuItemImage* menuButton = MenuItemImage::create("images/menu_button.png", "images/menu_button_clicked.png", CC_CALLBACK_1(GameOver::openMenu, this));
+    menuButton->setPosition(Point(visibleSize.width / 2 + origin.x, retryButton->getPosition().y - retryButton->getContentSize().height / 2 - menuButton->getContentSize().height));
 
     Menu* menu = Menu::create(menuButton, retryButton, NULL);
     menu->setPosition(Point::ZERO);

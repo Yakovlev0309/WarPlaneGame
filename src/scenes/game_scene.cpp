@@ -75,7 +75,7 @@ bool Game::init()
 	schedule(CC_SCHEDULE_SELECTOR(Game::spawnEnemy), enemySpawnInterval);
 	schedule(CC_SCHEDULE_SELECTOR(Game::changeRandomBirdHeight), BIRD_HEIGHT_CHANGING_INTERVAL);
 	schedule(CC_SCHEDULE_SELECTOR(Game::randomFightersFire), FIGHTER_FIRE_INTERVAL);
-	schedule(CC_SCHEDULE_SELECTOR(Game::removeOutOfScreenEnemies), OUT_OF_SCREEN_REMOVING_INTERVAL);
+	schedule(CC_SCHEDULE_SELECTOR(Game::removeOutOfScreenObjects), OUT_OF_SCREEN_REMOVING_INTERVAL);
 
 	scheduleUpdate();
 
@@ -372,11 +372,11 @@ void Game::randomFightersFire(float dt)
 	}
 }
 
-void Game::removeOutOfScreenEnemies(float dt)
+void Game::removeOutOfScreenObjects(float dt)
 {
-	//Bomber::removeOutOfScreenSprites();
-	//Fighter::removeOutOfScreenSprites();
-	//Bird::removeOutOfScreenSprites();
+	Bomber::removeOutOfScreenSprites();
+	Fighter::removeOutOfScreenSprites();
+	Bird::removeOutOfScreenSprites();
 
 	Vector<Node*> childs = getChildren();
 	for (int i = 0; i < getChildrenCount(); ++i)

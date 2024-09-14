@@ -31,7 +31,7 @@ private:
     void spawnEnemy(float dt);
     void changeRandomBirdHeight(float dt);
     void randomFightersFire(float dt);
-    void removeOutOfScreenEnemies(float dt);
+    void removeOutOfScreenObjects(float dt);
     void checkFightersForDodge(float dt);
     void addMeteorite();
 
