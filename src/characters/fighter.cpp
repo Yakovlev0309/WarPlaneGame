@@ -14,11 +14,11 @@ Fighter::Fighter(float height, float speed)
 	float dx = 50;
 	float dy = 31;
 	Vec2* points = new Vec2[6]{
-		Vec2(100 - dx, 0 - dy),
-		Vec2(100 - dx, 62 - dy),
+		Vec2(95 - dx, 5 - dy),
+		Vec2(95 - dx, 57 - dy),
 		Vec2(60 - dx, 50 - dy),
-		Vec2(0 - dx, 50 - dy),
-		Vec2(0 - dx, 30 - dy),
+		Vec2(5 - dx, 50 - dy),
+		Vec2(5 - dx, 30 - dy),
 		Vec2(60 - dx, 30 - dy)
 	};
 	PhysicsBody* body = PhysicsBody::createPolygon(points, 6);

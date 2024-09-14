@@ -10,7 +10,7 @@ Bird::Bird(float height, float speed)
 	sprite = Sprite::create("images/bird.png");
 	sprite->setPosition(Point(visibleSize.width + sprite->getContentSize().width / 2, height));
 
-	PhysicsBody* body = PhysicsBody::createBox(sprite->getContentSize());
+	PhysicsBody* body = PhysicsBody::createBox(sprite->getContentSize() * 0.8);
 	body->setGravityEnable(false);
 	body->setRotationEnable(false);
 	body->setVelocity(Vec2(-speed, 0));

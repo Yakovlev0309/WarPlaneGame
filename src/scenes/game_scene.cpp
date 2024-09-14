@@ -11,7 +11,7 @@ USING_NS_CC;
 Scene* Game::createScene()
 {
 	Scene* scene = Game::createWithPhysics();
-	//scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL); // red obstacles lines
+	scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL); // physics bodies lines
 	//scene->getPhysicsWorld()->setGravity(Vec2(0, 0));
 
 	Game* layer = Game::create();
@@ -116,6 +116,7 @@ void Game::collisionHandler(PhysicsBody* a, PhysicsBody* b)
 	switch (a->getCategoryBitmask() | b->getCategoryBitmask())
 	{
 	case COLLISION_WITH_BOMBER_BITMASK:
+	{
 		// remove bomber
 		if (a->getCategoryBitmask() == PLAYER_COLLISION_BITMASK)
 		{
@@ -127,6 +128,7 @@ void Game::collisionHandler(PhysicsBody* a, PhysicsBody* b)
 		}
 		gameOver();
 		break;
+	}
 	case COLLISION_WITH_FIGHTER_BITMASK:
 		// remove fighter
 		if (a->getCategoryBitmask() == PLAYER_COLLISION_BITMASK)

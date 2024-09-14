@@ -13,11 +13,11 @@ Bomber::Bomber(float height, float speed)
 	float dx = 105;
 	float dy = 44;
 	Vec2* points = new Vec2[6]{
-		Vec2(210 - dx, 0 - dy),
-		Vec2(210 - dx, 88 - dy),
+		Vec2(205 - dx, 5 - dy),
+		Vec2(205 - dx, 83 - dy),
 		Vec2(185 - dx, 50 - dy),
-		Vec2(0 - dx, 50 - dy),
-		Vec2(0 - dx, 10 - dy),
+		Vec2(5 - dx, 50 - dy),
+		Vec2(5 - dx, 10 - dy),
 		Vec2(185 - dx, 10 - dy)
 	};
 	PhysicsBody* body = PhysicsBody::createPolygon(points, 6);

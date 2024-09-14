@@ -16,11 +16,11 @@ Player::Player(Scene* gameScene, const Point& position) : scene(gameScene)
 	float dx = 50;
 	float dy = 31;
 	Vec2* points = new Vec2[6] {
-		Vec2(0 - dx, 0 - dy),
-		Vec2(0 - dx, 62 - dy),
+		Vec2(5 - dx, 5 - dy),
+		Vec2(5 - dx, 57 - dy),
 		Vec2(40 - dx, 50 - dy),
-		Vec2(100 - dx, 50 - dy),
-		Vec2(100 - dx, 30 - dy),
+		Vec2(95 - dx, 50 - dy),
+		Vec2(95 - dx, 30 - dy),
 		Vec2(40 - dx, 30 - dy)
 	};
 	PhysicsBody* planeBody = PhysicsBody::createPolygon(points, 6);
