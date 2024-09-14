@@ -56,14 +56,14 @@ bool Game::init()
 	addMeteorite();
 
 	gameTime = 0;
-	gameTimeLabel = Label::createWithTTF("seconds: 0", "fonts/Marker Felt.ttf", visibleSize.height * GAME_TIME_FONT_SIZE_FACTOR);
+	gameTimeLabel = Label::createWithSystemFont("seconds: 0", RESULTS_FONT, visibleSize.height * GAME_TIME_FONT_SIZE_FACTOR);
 	gameTimeLabel->setColor(Color3B::ORANGE);
 	gameTimeLabel->setPosition(Point(SCORE_N_TIME_MARGIN_FACTOR * visibleSize.width + gameTimeLabel->getContentSize().width / 2,
 		visibleSize.height - gameTimeLabel->getContentSize().height));
 	addChild(gameTimeLabel, 200);
 
 	score = 0;
-	scoreLabel = Label::createWithTTF("score: 0", "fonts/Marker Felt.ttf", visibleSize.height * SCORE_FONT_SIZE_FACTOR);
+	scoreLabel = Label::createWithSystemFont("score: 0", RESULTS_FONT, visibleSize.height * SCORE_FONT_SIZE_FACTOR);
 	scoreLabel->setColor(Color3B::WHITE);
 	scoreLabel->setPosition(Point(SCORE_N_TIME_MARGIN_FACTOR * visibleSize.width + scoreLabel->getContentSize().width / 2,
 		visibleSize.height - scoreLabel->getContentSize().height - gameTimeLabel->getContentSize().height));

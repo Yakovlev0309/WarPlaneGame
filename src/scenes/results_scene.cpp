@@ -34,15 +34,15 @@ bool Results::init()
     int highScore = resultsDB->getIntegerForKey("HIGHSCORE", 0);
     int biggestTime = resultsDB->getIntegerForKey("BIGGEST_TIME", 0);
 
-    Label* highScoreLabel = Label::createWithTTF("highscore: " + std::to_string(highScore), "fonts/Marker Felt.ttf", visibleSize.height * SCORE_FONT_SIZE_FACTOR);
-    highScoreLabel->setColor(Color3B::WHITE);
-    highScoreLabel->setPosition(Point(visibleSize.width / 2, visibleSize.height / 2));
-    addChild(highScoreLabel);
-
-    Label* biggestTimeLabel = Label::createWithTTF("biggest game time: " + std::to_string(biggestTime), "fonts/Marker Felt.ttf", visibleSize.height * GAME_TIME_FONT_SIZE_FACTOR);
+    Label* biggestTimeLabel = Label::createWithSystemFont("Biggest game time: " + std::to_string(biggestTime) + " seconds", RESULTS_FONT, visibleSize.height * GAME_TIME_FONT_SIZE_FACTOR * 2);
     biggestTimeLabel->setColor(Color3B::WHITE);
-    biggestTimeLabel->setPosition(Point(visibleSize.width / 2, highScoreLabel->getPositionY() - highScoreLabel->getContentSize().height - biggestTimeLabel->getContentSize().height));
+    biggestTimeLabel->setPosition(Point(visibleSize.width / 2, visibleSize.height / 2));
     addChild(biggestTimeLabel);
+
+    Label* highScoreLabel = Label::createWithSystemFont("Highscore: " + std::to_string(highScore), RESULTS_FONT, visibleSize.height * SCORE_FONT_SIZE_FACTOR * 2);
+    highScoreLabel->setColor(Color3B::WHITE);
+    highScoreLabel->setPosition(Point(visibleSize.width / 2, biggestTimeLabel->getPositionY() + biggestTimeLabel->getContentSize().height + highScoreLabel->getContentSize().height));
+    addChild(highScoreLabel);
 
     return true;
 }

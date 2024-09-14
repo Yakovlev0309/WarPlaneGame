@@ -12,6 +12,7 @@
 // font
 #define GAME_TIME_FONT_SIZE_FACTOR 0.05
 #define SCORE_FONT_SIZE_FACTOR 0.05
+#define RESULTS_FONT "Comic Sans MS"
 
 // margins
 #define GROUND_HEIGHT_FACTOR 0.05
