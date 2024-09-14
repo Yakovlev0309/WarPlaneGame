@@ -11,7 +11,7 @@ USING_NS_CC;
 Scene* Game::createScene()
 {
 	Scene* scene = Game::createWithPhysics();
-	scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL); // physics bodies lines
+	//scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL); // physics bodies lines
 	//scene->getPhysicsWorld()->setGravity(Vec2(0, 0));
 
 	Game* layer = Game::create();
@@ -50,6 +50,17 @@ bool Game::init()
 	mouseListener->onMouseDown = CC_CALLBACK_1(Game::onMouseDown, this);
 	mouseListener->onMouseUp = CC_CALLBACK_1(Game::onMouseUp, this);
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(mouseListener, this);
+
+	Sprite* sunSprite = Sprite::create("images/sun.png");
+	//sunSprite->setPosition(Vec2(visibleSize.width - sunSprite->getContentSize().width, visibleSize.height - sunSprite->getContentSize().height));
+	sunSprite->setPosition(Vec2(visibleSize.width, visibleSize.height));
+	PhysicsBody* sunBody = PhysicsBody::createCircle(sunSprite->getContentSize().width / 2);
+	sunBody->setGravityEnable(false);
+	sunBody->setRotationEnable(false);
+	sunBody->setCategoryBitmask(false);
+	sunBody->setContactTestBitmask(false);
+	sunSprite->setPhysicsBody(sunBody);
+	addChild(sunSprite, 1);
 
 	Enemy::init(this);
 
