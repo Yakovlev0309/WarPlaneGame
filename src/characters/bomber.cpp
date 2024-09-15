@@ -27,12 +27,12 @@ Bomber::Bomber(float height, float speed)
 
 	body->setCategoryBitmask(BOMBER_COLLISION_BITMASK);
 	body->setCollisionBitmask(
-		PLAYER_HIT_BOMBER_BITMASK | 
-		COLLISION_WITH_BOMBER_BITMASK | 
+		PLAYER_HIT_BOMBER_BITMASK |
+		COLLISION_WITH_BOMBER_BITMASK |
 		METEORITE_COLLISION_WITH_BOMBER_BITMASK);
 	body->setContactTestBitmask(
-		PLAYER_HIT_BOMBER_BITMASK | 
-		COLLISION_WITH_BOMBER_BITMASK | 
+		PLAYER_HIT_BOMBER_BITMASK |
+		COLLISION_WITH_BOMBER_BITMASK |
 		METEORITE_COLLISION_WITH_BOMBER_BITMASK);
 
 	sprite->setPhysicsBody(body);
@@ -56,13 +56,17 @@ Bomber::~Bomber()
 
 void Bomber::removeOutOfScreenSprites()
 {
+	std::vector<Bomber*> forDeletion;
 	for (Bomber* bomber : bombers)
 	{
 		if (!bomber->isOnScreen())
 		{
-			delete bomber;
-			break;
+			forDeletion.push_back(bomber);
 		}
+	}
+	for (Bomber* bomber : forDeletion)
+	{
+		delete bomber;
 	}
 }
 

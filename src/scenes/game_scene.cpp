@@ -52,7 +52,6 @@ bool Game::init()
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(mouseListener, this);
 
 	Sprite* sunSprite = Sprite::create("images/sun.png");
-	//sunSprite->setPosition(Vec2(visibleSize.width - sunSprite->getContentSize().width, visibleSize.height - sunSprite->getContentSize().height));
 	sunSprite->setPosition(Vec2(visibleSize.width, visibleSize.height));
 	PhysicsBody* sunBody = PhysicsBody::createCircle(sunSprite->getContentSize().width / 2);
 	sunBody->setGravityEnable(false);
@@ -98,7 +97,6 @@ bool Game::init()
 void Game::gameOver()
 {
 	onMouseUp(nullptr);
-	//Fighter::stopAllFirings();
 
 	Bomber::removeAll();
 	Fighter::removeAll();
@@ -318,12 +316,17 @@ void Game::updateGameTime(float dt)
 
 	if (gameTime % ENEMY_SPAWN_INTERVAL_CHANGE_TIME == 0)
 	{
-		enemySpawnInterval /= ENEMY_SPAWN_DIVIDER;
-		if (isScheduled(CC_SCHEDULE_SELECTOR(Game::spawnEnemy)))
-		{
-			unschedule(CC_SCHEDULE_SELECTOR(Game::spawnEnemy));
-			schedule(CC_SCHEDULE_SELECTOR(Game::spawnEnemy), enemySpawnInterval);
-		}
+		updateEnemySpawnInterval();
+	}
+}
+
+void Game::updateEnemySpawnInterval()
+{
+	enemySpawnInterval /= ENEMY_SPAWN_DIVIDER;
+	if (isScheduled(CC_SCHEDULE_SELECTOR(Game::spawnEnemy)))
+	{
+		unschedule(CC_SCHEDULE_SELECTOR(Game::spawnEnemy));
+		schedule(CC_SCHEDULE_SELECTOR(Game::spawnEnemy), enemySpawnInterval);
 	}
 }
 

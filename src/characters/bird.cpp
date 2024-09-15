@@ -55,13 +55,17 @@ Bird::~Bird()
 
 void Bird::removeOutOfScreenSprites()
 {
+	std::vector<Bird*> forDeletion;
 	for (Bird* bird : birds)
 	{
 		if (!bird->isOnScreen())
 		{
-			delete bird;
-			break;
+			forDeletion.push_back(bird);
 		}
+	}
+	for (Bird* bird : forDeletion)
+	{
+		delete bird;
 	}
 }
 

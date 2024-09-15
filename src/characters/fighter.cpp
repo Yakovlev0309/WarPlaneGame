@@ -58,24 +58,18 @@ Fighter::~Fighter()
 
 void Fighter::removeOutOfScreenSprites()
 {
-	// TODO удалять все спрайты за экраном, а не только первый попавшийся
+	std::vector<Fighter*> forDeletion;
 	for (Fighter* fighter : fighters)
 	{
 		if (!fighter->isOnScreen())
 		{
-			delete fighter;
-			break;
+			forDeletion.push_back(fighter);
 		}
 	}
-}
-
-void Fighter::stopAllFirings()
-{
-	for (int i = 0; i < firingFighters.size(); ++i)
+	for (Fighter* fighter : forDeletion)
 	{
-		firingFighters.at(i)->stopFire();
+		delete fighter;
 	}
-	firingFighters.clear();
 }
 
 void Fighter::removeByPhysicsBody(PhysicsBody* body)

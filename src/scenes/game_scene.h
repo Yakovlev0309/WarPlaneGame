@@ -27,6 +27,7 @@ private:
     void moveBackground(float dt);
     void movePlayer(float dt);
     void updateGameTime(float dt);
+    void updateEnemySpawnInterval();
 
     void spawnEnemy(float dt);
     void changeRandomBirdHeight(float dt);
