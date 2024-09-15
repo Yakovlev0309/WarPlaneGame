@@ -11,7 +11,7 @@ public:
 	~Bird();
 
 	static void removeOutOfScreenSprites();
-	static void removeByPhysicsBody(cocos2d::PhysicsBody* body);
+	static Bird* getByPhysicsBody(cocos2d::PhysicsBody* body);
 	static void removeAll();
 
 	static void changeRandomBirdHeight(float lower, float higher);

@@ -5,7 +5,7 @@ USING_NS_CC;
 
 std::vector<Bomber*> Bomber::bombers;
 
-Bomber::Bomber(float height, float speed)
+Bomber::Bomber(float height, float speed) : currentHealth(BOMBER_HEALTH)
 {
 	sprite = Sprite::create("images/bomber.png");
 	sprite->setPosition(Point(visibleSize.width + sprite->getContentSize().width / 2, height));
@@ -70,16 +70,16 @@ void Bomber::removeOutOfScreenSprites()
 	}
 }
 
-void Bomber::removeByPhysicsBody(PhysicsBody* body)
+Bomber* Bomber::getByPhysicsBody(PhysicsBody* body)
 {
 	for (Bomber* bomber : bombers)
 	{
 		if (bomber->sprite->getPhysicsBody() == body)
 		{
-			delete bomber;
-			break;
+			return bomber;
 		}
 	}
+	return nullptr;
 }
 
 void Bomber::removeAll()
@@ -94,3 +94,26 @@ void Bomber::removeAll()
 	}
 	bombers.clear();
 }
+
+void Bomber::getDamage(PhysicsBody* body, unsigned int damage)
+{
+	for (Bomber* bomber : bombers)
+	{
+		if (bomber->sprite->getPhysicsBody() == body)
+		{
+			bomber->getDamage(damage);
+			break;
+		}
+	}
+}
+
+void Bomber::getDamage(unsigned int damage)
+{
+	currentHealth -= damage;
+}
+
+unsigned int Bomber::getCurrentHealth()
+{
+	return currentHealth;
+}
+

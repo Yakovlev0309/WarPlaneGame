@@ -12,7 +12,12 @@ public:
 	void fire();
 	void stopFire();
 
+	void getDamage(unsigned int damage);
+	bool hasHealth();
+	void death();
+
 	void updatePosition(const cocos2d::Vec2& position);
+	
 	cocos2d::Vec2 getPosition();
 	cocos2d::Size getSize();
 	cocos2d::Sprite* getSprite();
@@ -27,6 +32,9 @@ private:
 	cocos2d::Sprite* planeSprite;
 
 	cocos2d::Scheduler* scheduler;
+
+	unsigned int currentHealth;
+	std::vector<cocos2d::Sprite*> hearts;
 };
 
 #endif // _PLAYER_H_

@@ -3,7 +3,7 @@
 
 USING_NS_CC;
 
-Player::Player(Scene* gameScene, const Point& position) : scene(gameScene)
+Player::Player(Scene* gameScene, const Point& position) : scene(gameScene), currentHealth(PLAYER_HEALTH)
 {
 	visibleSize = Director::getInstance()->getVisibleSize();
 	origin = Director::getInstance()->getVisibleOrigin();
@@ -43,6 +43,15 @@ Player::Player(Scene* gameScene, const Point& position) : scene(gameScene)
 	planeSprite->setPhysicsBody(planeBody);
 
 	scene->addChild(planeSprite, 100);
+
+	hearts.reserve(HEARTS_COUNT);
+	for (int i = 0; i < HEARTS_COUNT; ++i)
+	{
+		Sprite* heart = Sprite::create("images/heart.png");
+		heart->setPosition(Point(heart->getContentSize().width * 2 + heart->getContentSize().width * i, visibleSize.height - heart->getContentSize().height));
+		scene->addChild(heart, 200);
+		hearts.push_back(heart);
+	}
 }
 
 Player::~Player()
@@ -76,6 +85,35 @@ void Player::shot(float dt)
 void Player::stopFire()
 {
 	scheduler->unschedule(SEL_SCHEDULE(&Player::shot), this);
+}
+
+void Player::getDamage(unsigned int damage)
+{
+	currentHealth -= damage;
+
+	if (currentHealth < hearts.size() * HEALTH_IN_ONE_HEART)
+	{
+		scene->removeChild(hearts[hearts.size() - 1], true);
+		hearts.erase(--hearts.end());
+	}
+}
+
+bool Player::hasHealth()
+{
+	if (currentHealth == 0)
+	{
+		return false;
+	}
+	return true;
+}
+
+void Player::death()
+{
+	for (Sprite* heart : hearts)
+	{
+		scene->removeChild(heart, true);
+	}
+	hearts.clear();
 }
 
 void Player::updatePosition(const Vec2& position)

@@ -21,6 +21,10 @@
 // out of screen objects
 #define OUT_OF_SCREEN_REMOVING_INTERVAL 3.0
 
+// scores
+#define SCORES_FOR_BOMBER 3.0
+#define SCORES_FOR_FIGHTER 1.0
+
 // enemy spawn
 #define BEGIN_ENEMY_SPAWN_INTERVAL 1.0
 #define ENEMY_SPAWN_DIVIDER 1.1
@@ -58,6 +62,17 @@
 // bullets and guns
 #define BULLET_SPEED 500.0
 #define PLAYER_GUN_RATE 0.1
+
+// bullets damage
+#define BULLET_DAMAGE 10.0
+#define FIGHTER_BULLET_DAMAGE 10.0
+
+// healths
+#define BOMBER_HEALTH 50.0
+#define FIGHTER_HEALTH 30.0
+#define PLAYER_HEALTH 30.0
+#define HEALTH_IN_ONE_HEART 10.0
+#define HEARTS_COUNT PLAYER_HEALTH / HEALTH_IN_ONE_HEART
 
 // bird height
 #define BIRD_Y_SPEED 50.0

@@ -6,7 +6,7 @@ USING_NS_CC;
 std::vector<Fighter*> Fighter::fighters;
 std::vector<Fighter*> Fighter::firingFighters;
 
-Fighter::Fighter(float height, float speed)
+Fighter::Fighter(float height, float speed) : currentHealth(FIGHTER_HEALTH)
 {
 	sprite = Sprite::create("images/fighter.png");
 	sprite->setPosition(Point(visibleSize.width + sprite->getContentSize().width / 2, height));
@@ -72,16 +72,16 @@ void Fighter::removeOutOfScreenSprites()
 	}
 }
 
-void Fighter::removeByPhysicsBody(PhysicsBody* body)
+Fighter* Fighter::getByPhysicsBody(PhysicsBody* body)
 {
 	for (Fighter* fighter : fighters)
 	{
 		if (fighter->sprite->getPhysicsBody() == body)
 		{
-			delete fighter;
-			break;
+			return fighter;
 		}
 	}
+	return nullptr;
 }
 
 void Fighter::removeAll()
@@ -185,4 +185,26 @@ void Fighter::stopFire()
 	{
 		firingFighters.erase(fighter);
 	}
+}
+
+void Fighter::getDamage(PhysicsBody* body, unsigned int damage)
+{
+	for (Fighter* fighter : fighters)
+	{
+		if (fighter->sprite->getPhysicsBody() == body)
+		{
+			fighter->getDamage(damage);
+			break;
+		}
+	}
+}
+
+void Fighter::getDamage(unsigned int damage)
+{
+	currentHealth -= damage;
+}
+
+unsigned int Fighter::getCurrentHealth()
+{
+	return currentHealth;
 }

@@ -6,7 +6,7 @@ USING_NS_CC;
 Meteorite::Meteorite(float xPosition)
 {
 	sprite = Sprite::create("images/meteorite.png");
-	sprite->setPosition(Vec2(xPosition, visibleSize.height + sprite->getContentSize().height));
+	sprite->setPosition(Point(xPosition, visibleSize.height + sprite->getContentSize().height));
 
 	PhysicsBody* body = PhysicsBody::createCircle(sprite->getContentSize().width / 2);
 	body->setGravityEnable(false);

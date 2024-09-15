@@ -11,7 +11,7 @@ public:
 	~Fighter();
 
 	static void removeOutOfScreenSprites();
-	static void removeByPhysicsBody(cocos2d::PhysicsBody* body);
+	static Fighter* getByPhysicsBody(cocos2d::PhysicsBody* body);
 	static void removeAll();
 
 	static void checkFightersForDodge(const cocos2d::Vec2& playerPosition, float lower, float higher);
@@ -19,12 +19,19 @@ public:
 	void dodge(float lower, float higher);
 	void fire();
 
+	static void getDamage(cocos2d::PhysicsBody* body, unsigned int damage);
+	void getDamage(unsigned int damage);
+
+	unsigned int getCurrentHealth();
+
 	static std::vector<Fighter*> fighters;
 	static std::vector<Fighter*> firingFighters;
 
 private:
 	void shot();
 	void stopFire();
+
+	unsigned int currentHealth;
 };
 
 #endif // _FIGHTER_H_

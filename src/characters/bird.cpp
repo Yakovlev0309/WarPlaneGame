@@ -69,14 +69,13 @@ void Bird::removeOutOfScreenSprites()
 	}
 }
 
-void Bird::removeByPhysicsBody(PhysicsBody* body)
+Bird* Bird::getByPhysicsBody(PhysicsBody* body)
 {
 	for (Bird* bird : birds)
 	{
 		if (bird->sprite->getPhysicsBody() == body)
 		{
-			delete bird;
-			break;
+			return bird;
 		}
 	}
 }

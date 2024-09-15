@@ -11,10 +11,18 @@ public:
 	~Bomber();
 
 	static void removeOutOfScreenSprites();
-	static void removeByPhysicsBody(cocos2d::PhysicsBody* body);
+	static Bomber* getByPhysicsBody(cocos2d::PhysicsBody* body);
 	static void removeAll();
 
+	static void getDamage(cocos2d::PhysicsBody* body, unsigned int damage);
+	void getDamage(unsigned int damage);
+
+	unsigned int getCurrentHealth();
+
 	static std::vector<Bomber*> bombers;
+
+private:
+	unsigned int currentHealth;
 };
 
 #endif // _BOMBER_H_

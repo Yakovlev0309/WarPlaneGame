@@ -52,13 +52,7 @@ bool Game::init()
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(mouseListener, this);
 
 	Sprite* sunSprite = Sprite::create("images/sun.png");
-	sunSprite->setPosition(Vec2(visibleSize.width, visibleSize.height));
-	PhysicsBody* sunBody = PhysicsBody::createCircle(sunSprite->getContentSize().width / 2);
-	sunBody->setGravityEnable(false);
-	sunBody->setRotationEnable(false);
-	sunBody->setCategoryBitmask(false);
-	sunBody->setContactTestBitmask(false);
-	sunSprite->setPhysicsBody(sunBody);
+	sunSprite->setPosition(Point(visibleSize.width, visibleSize.height));
 	addChild(sunSprite, 1);
 
 	Enemy::init(this);
@@ -67,16 +61,16 @@ bool Game::init()
 
 	gameTime = 0;
 	gameTimeLabel = Label::createWithSystemFont("seconds: 0", RESULTS_FONT, visibleSize.height * GAME_TIME_FONT_SIZE_FACTOR);
-	gameTimeLabel->setColor(Color3B::ORANGE);
+	gameTimeLabel->setColor(Color3B::WHITE);
 	gameTimeLabel->setPosition(Point(SCORE_N_TIME_MARGIN_FACTOR * visibleSize.width + gameTimeLabel->getContentSize().width / 2,
-		visibleSize.height - gameTimeLabel->getContentSize().height));
+		visibleSize.height - gameTimeLabel->getContentSize().height * 2));
 	addChild(gameTimeLabel, 200);
 
 	score = 0;
 	scoreLabel = Label::createWithSystemFont("score: 0", RESULTS_FONT, visibleSize.height * SCORE_FONT_SIZE_FACTOR);
 	scoreLabel->setColor(Color3B::WHITE);
 	scoreLabel->setPosition(Point(SCORE_N_TIME_MARGIN_FACTOR * visibleSize.width + scoreLabel->getContentSize().width / 2,
-		visibleSize.height - scoreLabel->getContentSize().height - gameTimeLabel->getContentSize().height));
+		gameTimeLabel->getPositionY() - scoreLabel->getContentSize().height));
 	addChild(scoreLabel, 200);
 
 	enemySpawnInterval = BEGIN_ENEMY_SPAWN_INTERVAL;
@@ -97,6 +91,11 @@ bool Game::init()
 void Game::gameOver()
 {
 	onMouseUp(nullptr);
+
+	if (player->hasHealth())
+	{
+		player->death();
+	}
 
 	Bomber::removeAll();
 	Fighter::removeAll();
@@ -129,11 +128,11 @@ void Game::collisionHandler(PhysicsBody* a, PhysicsBody* b)
 		// remove bomber
 		if (a->getCategoryBitmask() == PLAYER_COLLISION_BITMASK)
 		{
-			Bomber::removeByPhysicsBody(b);
+			delete Bomber::getByPhysicsBody(b);
 		}
 		else
 		{
-			Bomber::removeByPhysicsBody(a);
+			delete Bomber::getByPhysicsBody(a);
 		}
 		gameOver();
 		break;
@@ -142,11 +141,11 @@ void Game::collisionHandler(PhysicsBody* a, PhysicsBody* b)
 		// remove fighter
 		if (a->getCategoryBitmask() == PLAYER_COLLISION_BITMASK)
 		{
-			Fighter::removeByPhysicsBody(b);
+			delete Fighter::getByPhysicsBody(b);
 		}
 		else
 		{
-			Fighter::removeByPhysicsBody(a);
+			delete Fighter::getByPhysicsBody(a);
 		}
 		gameOver();
 		break;
@@ -154,43 +153,55 @@ void Game::collisionHandler(PhysicsBody* a, PhysicsBody* b)
 		// remove bird
 		if (a->getCategoryBitmask() == PLAYER_COLLISION_BITMASK)
 		{
-			Bird::removeByPhysicsBody(a);
+			delete Bird::getByPhysicsBody(a);
 		}
 		else
 		{
-			Bird::removeByPhysicsBody(a);
+			delete Bird::getByPhysicsBody(a);
 		}
 		gameOver();
 		break;
 	case PLAYER_HIT_BOMBER_BITMASK:
 		// remove bullet and bomber
+		Bomber* bomber;
 		if (a->getCategoryBitmask() == BULLET_COLLISION_BITMASK)
 		{
-			Bomber::removeByPhysicsBody(b);
+			bomber = Bomber::getByPhysicsBody(b);
 			removeChild(a->getNode());
 		}
 		else
 		{
-			Bomber::removeByPhysicsBody(a);
+			bomber = Bomber::getByPhysicsBody(a);
 			removeChild(b->getNode());
 		}
-		score++;
-		scoreLabel->setString("score: " + std::to_string(score));
+		bomber->getDamage(BULLET_DAMAGE);
+		if (bomber->getCurrentHealth() == 0)
+		{
+			delete bomber;
+			score += SCORES_FOR_BOMBER;
+			scoreLabel->setString("score: " + std::to_string(score));
+		}
 		break;
 	case PLAYER_HIT_FIGHTER_BITMASK:
 		// remove bullet and fighter
+		Fighter* fighter;
 		if (a->getCategoryBitmask() == BULLET_COLLISION_BITMASK)
 		{
-			Fighter::removeByPhysicsBody(b);
+			fighter = Fighter::getByPhysicsBody(b);
 			removeChild(a->getNode());
 		}
 		else
 		{
-			Fighter::removeByPhysicsBody(a);
+			fighter = Fighter::getByPhysicsBody(a);
 			removeChild(b->getNode());
 		}
-		score++;
-		scoreLabel->setString("score: " + std::to_string(score));
+		fighter->getDamage(BULLET_DAMAGE);
+		if (fighter->getCurrentHealth() == 0)
+		{
+			delete fighter;
+			score += SCORES_FOR_FIGHTER;
+			scoreLabel->setString("score: " + std::to_string(score));
+		}
 		break;
 	case FIGHTER_HIT_PLAYER_BITMASK:
 		// remove bullet
@@ -202,7 +213,11 @@ void Game::collisionHandler(PhysicsBody* a, PhysicsBody* b)
 		{
 			removeChild(b->getNode());
 		}
-		gameOver();
+		player->getDamage(FIGHTER_BULLET_DAMAGE);
+		if (!player->hasHealth())
+		{
+			gameOver();
+		}
 		break;
 	case METEORITE_COLLISION_WITH_PLAYER_BITMASK:
 		gameOver();
@@ -211,22 +226,22 @@ void Game::collisionHandler(PhysicsBody* a, PhysicsBody* b)
 		// remove bomber
 		if (a->getCategoryBitmask() == METEORITE_COLLISION_BITMASK)
 		{
-			Bomber::removeByPhysicsBody(b);
+			delete Bomber::getByPhysicsBody(b);
 		}
 		else
 		{
-			Bomber::removeByPhysicsBody(a);
+			delete Bomber::getByPhysicsBody(a);
 		}
 		break;
 	case METEORITE_COLLISION_WITH_FIGHTER_BITMASK:
 		// remove fighter
 		if (a->getCategoryBitmask() == METEORITE_COLLISION_BITMASK)
 		{
-			Fighter::removeByPhysicsBody(b);
+			delete Fighter::getByPhysicsBody(b);
 		}
 		else
 		{
-			Fighter::removeByPhysicsBody(a);
+			delete Fighter::getByPhysicsBody(a);
 		}
 		break;
 	}
@@ -292,7 +307,7 @@ void Game::moveBackground(float dt)
 
 void Game::movePlayer(float dt)
 {
-	if (std::abs(targetPlayerPosition.x - player->getPosition().x) > 5 || 
+	if (std::abs(targetPlayerPosition.x - player->getPosition().x) > 5 ||
 		std::abs(targetPlayerPosition.y - player->getPosition().y) > 5)
 	{
 		Vec2 direction = targetPlayerPosition - player->getPosition();
@@ -429,7 +444,7 @@ void Game::addMeteorite()
 		addMeteorite();
 		};
 
-	scheduleOnce(addMeteoriteFunc, 
+	scheduleOnce(addMeteoriteFunc,
 		METEORITE_LOWER_TIME_BOUND + rand() % (METEORITE_HIGHER_TIME_BOUND - METEORITE_LOWER_TIME_BOUND + 1),
 		"addMeteoriteFunc");
 }
