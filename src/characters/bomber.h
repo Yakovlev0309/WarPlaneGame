@@ -14,7 +14,6 @@ public:
 	static Bomber* getByPhysicsBody(cocos2d::PhysicsBody* body);
 	static void removeAll();
 
-	static void getDamage(cocos2d::PhysicsBody* body, unsigned int damage);
 	void getDamage(unsigned int damage);
 
 	unsigned int getCurrentHealth();

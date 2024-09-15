@@ -95,18 +95,6 @@ void Bomber::removeAll()
 	bombers.clear();
 }
 
-void Bomber::getDamage(PhysicsBody* body, unsigned int damage)
-{
-	for (Bomber* bomber : bombers)
-	{
-		if (bomber->sprite->getPhysicsBody() == body)
-		{
-			bomber->getDamage(damage);
-			break;
-		}
-	}
-}
-
 void Bomber::getDamage(unsigned int damage)
 {
 	currentHealth -= damage;

@@ -19,7 +19,6 @@ public:
 	void dodge(float lower, float higher);
 	void fire();
 
-	static void getDamage(cocos2d::PhysicsBody* body, unsigned int damage);
 	void getDamage(unsigned int damage);
 
 	unsigned int getCurrentHealth();

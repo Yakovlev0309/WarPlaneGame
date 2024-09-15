@@ -187,18 +187,6 @@ void Fighter::stopFire()
 	}
 }
 
-void Fighter::getDamage(PhysicsBody* body, unsigned int damage)
-{
-	for (Fighter* fighter : fighters)
-	{
-		if (fighter->sprite->getPhysicsBody() == body)
-		{
-			fighter->getDamage(damage);
-			break;
-		}
-	}
-}
-
 void Fighter::getDamage(unsigned int damage)
 {
 	currentHealth -= damage;
