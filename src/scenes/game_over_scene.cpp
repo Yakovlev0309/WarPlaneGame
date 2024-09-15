@@ -60,7 +60,7 @@ bool GameOver::init()
     currentScoreLabel->setPosition(visibleSize.width / 5, visibleSize.height / 2);
     addChild(currentScoreLabel);
 
-    Label* currentTimeLabel = Label::createWithSystemFont("game time: " + std::to_string(currentTime), RESULTS_FONT, visibleSize.height * GAME_TIME_FONT_SIZE_FACTOR);
+    Label* currentTimeLabel = Label::createWithSystemFont("game time: " + std::to_string(currentTime) + " s", RESULTS_FONT, visibleSize.height * GAME_TIME_FONT_SIZE_FACTOR);
     currentTimeLabel->setColor(Color3B::WHITE);
     currentTimeLabel->setPosition(visibleSize.width / 5, visibleSize.height / 2 - currentTimeLabel->getContentSize().height);
     addChild(currentTimeLabel);
@@ -70,7 +70,7 @@ bool GameOver::init()
     highScoreLabel->setPosition(Point(visibleSize.width / 5 * 4, visibleSize.height / 2));
     addChild(highScoreLabel);
 
-    Label* biggestTimeLabel = Label::createWithSystemFont("biggest game time: " + std::to_string(biggestTime), RESULTS_FONT, visibleSize.height * GAME_TIME_FONT_SIZE_FACTOR);
+    Label* biggestTimeLabel = Label::createWithSystemFont("biggest game time: " + std::to_string(biggestTime) + " s", RESULTS_FONT, visibleSize.height * GAME_TIME_FONT_SIZE_FACTOR);
     biggestTimeLabel->setColor(Color3B::YELLOW);
     biggestTimeLabel->setPosition(Point(visibleSize.width / 5 * 4, visibleSize.height / 2 - biggestTimeLabel->getContentSize().height));
     addChild(biggestTimeLabel);
