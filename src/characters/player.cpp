@@ -60,7 +60,7 @@ void Player::shot(float dt)
 	Sprite* bulletSprite = Sprite::create("images/bullet.png");
 	bulletSprite->setPosition(planeSprite->getPosition());
 
-	PhysicsBody* body = PhysicsBody::createBox(bulletSprite->getContentSize());
+	PhysicsBody* body = PhysicsBody::createBox(bulletSprite->getContentSize() * 0.8);
 	body->setGravityEnable(true);
 	body->setVelocity(Vec2(BULLET_SPEED, 0));
 

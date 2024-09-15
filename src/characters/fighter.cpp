@@ -170,7 +170,7 @@ void Fighter::shot()
 	Sprite* bulletSprite = Sprite::create("images/fighter_bullet.png");
 	bulletSprite->setPosition(sprite->getPosition());
 
-	PhysicsBody* body = PhysicsBody::createBox(bulletSprite->getContentSize());
+	PhysicsBody* body = PhysicsBody::createBox(bulletSprite->getContentSize() * 0.8);
 	body->setGravityEnable(true);
 	body->setVelocity(Vec2(-FIGHTER_BULLET_SPEED + sprite->getPhysicsBody()->getVelocity().x, 0));
 
